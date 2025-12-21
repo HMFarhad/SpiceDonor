@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Observable, interval, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MenuDataService, SeoService, I18nService } from '@core/services';
 import { SiteSettings, Special } from '@core/models';
@@ -9,7 +9,32 @@ import { SiteSettings, Special } from '@core/models';
   template: `
     <div class="home-page">
       <!-- Hero Section -->
-      <section class="hero" *ngIf="settings$ | async as settings">
+      <section class="hero" 
+               [class.slide-background]="true"
+               [style.background-image]="'url(/assets/images/' + currentBackgroundImage + ')'"
+               *ngIf="settings$ | async as settings">
+        
+        <!-- Slider Controls -->
+        <div class="slider-controls">
+          <button class="slider-btn slider-prev" (click)="previousImage()" aria-label="Previous image">
+            <span class="slider-icon">‹</span>
+          </button>
+          <button class="slider-btn slider-next" (click)="nextImage()" aria-label="Next image">
+            <span class="slider-icon">›</span>
+          </button>
+        </div>
+
+        <!-- Slider Indicators -->
+        <div class="slider-indicators">
+          <button 
+            *ngFor="let image of backgroundImages; let i = index" 
+            class="slider-dot"
+            [class.active]="i === currentImageIndex"
+            (click)="goToSlide(i)"
+            [attr.aria-label]="'Go to slide ' + (i + 1)">
+          </button>
+        </div>
+
         <div class="container">
           <div class="hero-content">
             <div class="hero-text">
@@ -107,7 +132,7 @@ import { SiteSettings, Special } from '@core/models';
           </div>
           
           <div class="grid grid-2">
-            <div *ngFor="let special of specials" class="special-card card">
+            <div *ngFor="let special of specials; trackBy: trackBySpecialId" class="special-card card">
               <div class="card-body">
                 <h3 class="special-title">{{ i18n.getLocalizedContent(special.title) }}</h3>
                 <p class="special-description">{{ i18n.getLocalizedContent(special.description) }}</p>
@@ -201,9 +226,25 @@ import { SiteSettings, Special } from '@core/models';
   `,
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
   settings$: Observable<SiteSettings | null>;
+  specials$: Observable<Special[]>;
   activeSpecials$: Observable<Special[]>;
+  currentBackgroundImage: string = 'image1.jpg';
+  
+  backgroundImages: string[] = [
+    'image1.jpg', // pita_meat category
+    'image5.jpg', // pita_veg category  
+    'image5.jpg', // mezze_bowls category
+    'image5.jpg', // doner_bowls category
+    'image5.jpg', // children category
+    'image1.jpg', // sides category
+    'image1.jpg', // beverages category
+    'image5.jpg'  // dips category
+  ];
+  
+  currentImageIndex: number = 0;
+  private slideSubscription?: Subscription;
 
   constructor(
     private menuDataService: MenuDataService,
@@ -213,9 +254,13 @@ export class HomeComponent implements OnInit {
     this.settings$ = this.menuDataService.menuData$.pipe(
       map(data => data?.settings || null)
     );
-
+    
+    this.specials$ = this.menuDataService.menuData$.pipe(
+      map(data => data?.specials || [])
+    );
+    
     this.activeSpecials$ = this.menuDataService.menuData$.pipe(
-      map(data => data?.specials?.filter(special => special.active) || [])
+      map(data => data?.specials?.filter((special: Special) => special.active) || [])
     );
   }
 
@@ -234,5 +279,46 @@ export class HomeComponent implements OnInit {
         this.seoService.generateRestaurantJsonLd(settings);
       }
     });
+
+    // Start background image slideshow
+    this.startBackgroundSlideshow();
+  }
+
+  ngOnDestroy(): void {
+    if (this.slideSubscription) {
+      this.slideSubscription.unsubscribe();
+    }
+  }
+
+  private startBackgroundSlideshow(): void {
+    // Change background every 4 seconds
+    this.slideSubscription = interval(4000).subscribe(() => {
+      this.nextBackgroundImage();
+    });
+  }
+
+  private nextBackgroundImage(): void {
+    this.currentImageIndex = (this.currentImageIndex + 1) % this.backgroundImages.length;
+    this.currentBackgroundImage = this.backgroundImages[this.currentImageIndex];
+  }
+
+  nextImage(): void {
+    this.nextBackgroundImage();
+  }
+
+  previousImage(): void {
+    this.currentImageIndex = this.currentImageIndex === 0 
+      ? this.backgroundImages.length - 1 
+      : this.currentImageIndex - 1;
+    this.currentBackgroundImage = this.backgroundImages[this.currentImageIndex];
+  }
+
+  goToSlide(index: number): void {
+    this.currentImageIndex = index;
+    this.currentBackgroundImage = this.backgroundImages[this.currentImageIndex];
+  }
+
+  trackBySpecialId(index: number, special: Special): string {
+    return special.id || index.toString();
   }
 }

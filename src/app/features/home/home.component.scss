@@ -5,10 +5,112 @@
   align-items: center;
   color: var(--white);
   overflow: hidden;
-  background-image: url('/assets/images/MainBG.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+
+  &.slide-background {
+    transition: background-image 1.5s ease-in-out;
+  }
+
+  // Slider Controls
+  .slider-controls {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2rem;
+    z-index: 5;
+    pointer-events: none;
+
+    .slider-btn {
+      pointer-events: all;
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: scale(1.1);
+      }
+
+      .slider-icon {
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1;
+      }
+    }
+  }
+
+  // Slider Indicators
+  .slider-indicators {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    z-index: 5;
+
+    .slider-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(3px);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.6);
+        transform: scale(1.2);
+      }
+
+      &.active {
+        background: rgba(255, 255, 255, 0.9);
+        border-color: rgba(255, 255, 255, 0.9);
+        transform: scale(1.3);
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .slider-controls {
+      padding: 0 1rem;
+      
+      .slider-btn {
+        width: 40px;
+        height: 40px;
+        
+        .slider-icon {
+          font-size: 1.2rem;
+        }
+      }
+    }
+
+    .slider-indicators {
+      bottom: 1rem;
+      
+      .slider-dot {
+        width: 10px;
+        height: 10px;
+      }
+    }
+  }
 
   &::before {
     content: '';
