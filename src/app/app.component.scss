@@ -1,0 +1,30 @@
+/* Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+// CSS Variables for theming
+:root {
+  --primary-color: #2E6F40;
+  --secondary-color: #D4A373;
+  --background-color: #FAFAF8;
+  --text-dark: #1E1E1E;
+  --text-light: #6B7280;
+  --white: #FFFFFF;
+  --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --radius-small: 8px;
+  --radius-medium: 12px;
+  --radius-large: 16px;
+  --transition: all 0.2s ease-in-out;
+}
+
+// App-specific styles for the root component
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background-color);
+
+  main {
+    flex: 1;
+  }
+}

@@ -1,0 +1,5 @@
+id,group_id,name_en,name_fi,price_delta
+mild,spice_level,Mild,Mieto,0.00
+medium,spice_level,Medium,Keskitulisuus,0.00
+hot,spice_level,Hot,Tulinen,0.00
+extra_hot,spice_level,Extra Hot,Erittäin tulinen,0.00

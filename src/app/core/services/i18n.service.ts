@@ -1,0 +1,348 @@
+import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { BehaviorSubject } from 'rxjs';
+
+export type SupportedLanguage = 'en' | 'fi';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class I18nService {
+  private currentLanguageSubject = new BehaviorSubject<SupportedLanguage>('fi');
+  public currentLanguage$ = this.currentLanguageSubject.asObservable();
+  
+  private readonly LANGUAGE_STORAGE_KEY = 'restaurant_language';
+  
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    this.initializeLanguage();
+  }
+
+  private initializeLanguage(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      const savedLanguage = localStorage.getItem(this.LANGUAGE_STORAGE_KEY) as SupportedLanguage;
+      if (savedLanguage && this.isSupportedLanguage(savedLanguage)) {
+        this.setLanguage(savedLanguage);
+      } else {
+        // Try to detect from browser
+        const browserLang = navigator.language.split('-')[0] as SupportedLanguage;
+        this.setLanguage(this.isSupportedLanguage(browserLang) ? browserLang : 'fi');
+      }
+    }
+  }
+
+  public setLanguage(language: SupportedLanguage): void {
+    if (this.isSupportedLanguage(language)) {
+      this.currentLanguageSubject.next(language);
+      if (isPlatformBrowser(this.platformId)) {
+        localStorage.setItem(this.LANGUAGE_STORAGE_KEY, language);
+      }
+    }
+  }
+
+  public getCurrentLanguage(): SupportedLanguage {
+    return this.currentLanguageSubject.value;
+  }
+
+  public toggleLanguage(): void {
+    const current = this.getCurrentLanguage();
+    this.setLanguage(current === 'en' ? 'fi' : 'en');
+  }
+
+  public getLocalizedContent(content: { en: string; fi: string } | string | undefined): string {
+    if (!content) return '';
+    if (typeof content === 'string') return content;
+    
+    const currentLang = this.getCurrentLanguage();
+    return content[currentLang] || content.fi || content.en || '';
+  }
+
+  public formatPrice(amount: number, currency: string = 'EUR'): string {
+    const locale = this.getCurrentLanguage() === 'fi' ? 'fi-FI' : 'en-US';
+    return new Intl.NumberFormat(locale, {
+      style: 'currency',
+      currency: currency
+    }).format(amount);
+  }
+
+  public formatDate(date: Date): string {
+    const locale = this.getCurrentLanguage() === 'fi' ? 'fi-FI' : 'en-US';
+    return new Intl.DateTimeFormat(locale, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }).format(date);
+  }
+
+  public formatTime(time: string): string {
+    // time is in HH:mm format
+    const [hours, minutes] = time.split(':');
+    const date = new Date();
+    date.setHours(parseInt(hours), parseInt(minutes));
+    
+    const locale = this.getCurrentLanguage() === 'fi' ? 'fi-FI' : 'en-US';
+    return new Intl.DateTimeFormat(locale, {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    }).format(date);
+  }
+
+  private isSupportedLanguage(language: string): language is SupportedLanguage {
+    return ['en', 'fi'].includes(language);
+  }
+
+  // Translations for common UI elements
+  public translate(key: string): string {
+    const translations: Record<SupportedLanguage, Record<string, string>> = {
+      en: {
+        'menu': 'Menu',
+        'about': 'About',
+        'contact': 'Contact',
+        'order_now': 'Order Now',
+        'order_on_wolt': 'Order on Wolt',
+        'order_on_bolt': 'Order on Bolt Food',
+        'order_on_foodora': 'Order on Foodora',
+        'view_menu': 'View Menu',
+        'home': 'Home',
+        'categories': 'Categories',
+        'all_categories': 'All Categories',
+        'search_menu': 'Search menu...',
+        'dietary_filters': 'Dietary Filters',
+        'allergen_filters': 'Allergen Filters',
+        'vegan': 'Vegan',
+        'vegetarian': 'Vegetarian',
+        'halal': 'Halal',
+        'gluten_free': 'Gluten Free',
+        'dairy_free': 'Dairy Free',
+        'lactose_free': 'Lactose Free',
+        'keto': 'Keto',
+        'spicy': 'Spicy',
+        'Fresh Daily': 'Fresh Daily',
+        'Why Choose Bengal Ruokopaikka?': 'Why Choose Spice Döner?',
+        'Fresh ingredients, authentic flavors, healthy options': 'Fresh ingredients, authentic flavors, healthy options',
+        'opening_hours': 'Opening Hours',
+        'closed': 'Closed',
+        'open': 'Open',
+        'opens_at': 'Opens at',
+        'closes_at': 'Closes at',
+        'phone': 'Phone',
+        'email': 'Email',
+        'address': 'Address',
+        'last_updated': 'Last updated',
+        'loading': 'Loading',
+        'error_loading_menu': 'Error loading menu',
+        'retry': 'Retry',
+        'from': 'from',
+        'unavailable': 'Unavailable',
+        'add_to_order': 'Add to Order',
+        'options': 'Options',
+        'select_options': 'Select Options',
+        'required': 'Required',
+        'optional': 'Optional',
+        'privacy_policy': 'Privacy Policy',
+        'terms_of_service': 'Terms of Service',
+        'cookie_consent': 'This website uses cookies to improve your experience.',
+        'accept_cookies': 'Accept',
+        'decline_cookies': 'Decline',
+        'catering': 'Catering',
+        'faq': 'FAQ',
+        'locations': 'Locations',
+        'dietary_guide': 'Dietary Guide',
+        'about_story_title': 'Our Story: Tradition Meets Modern Flavor',
+        'about_story_p1': 'At Spice Döner, we believe that fast food doesn\'t have to be "junk" food. We started with a simple mission: to elevate the traditional Döner experience into a vibrant, fresh, and gourmet meal that everyone—regardless of dietary needs—can enjoy.',
+        'about_story_p2': 'From our signature Hand-Carved Döner to our colorful Mezze Bowls, every plate we serve is a balance of Mediterranean tradition and modern culinary flair.',
+        'about_different_title': 'Why Spice Döner is Different',
+        'about_inclusivity_title': 'True Dietary Inclusivity',
+        'about_inclusivity_text': 'We take pride in being one of the most dietary-friendly spots in the city. Whether you are Vegan (V), Gluten-Free (G), or Lactose-Free (L), our menu is designed for you. Almost all of our Pitas, Burgers, and Bowls can be customized to fit your lifestyle—without sacrificing flavor.',
+        'about_freshness_title': 'Freshness First',
+        'about_freshness_text': 'Our kitchens are filled with the scent of fresh parsley, sumac-marinated onions, and house-made hummus. We don\'t just "assemble" food; we craft it using fresh pomegranate seeds, crisp red cabbage, and authentic Halloumi.',
+        'about_chef_title': 'The "Be The Chef" Experience',
+        'about_chef_text': 'We believe in food that fits your mood. That\'s why we offer "Oma valinta" (Your Choice) options, allowing you to build a bowl or pita that is as unique as your palate.',
+        'about_promise_title': 'Our Promise',
+        'about_promise_text': 'Whether you\'re grabbing a Kana Döner Pita on the go, sitting down for a family Mezze Feast, or treating the kids to our specialized Lasten Menu, you are getting high-quality ingredients, bold spices, and a meal made with passion.',
+        'about_closing': 'Experience the spice. Taste the freshness. Welcome to Spice Döner.',
+        
+        // Contact form translations
+        'contact_page_title': 'Contact & Reservations',
+        'contact_page_subtitle': 'Get in touch with Spice Döner or make a reservation',
+        'visit_us': 'Visit Us',
+        'contact_type': 'Contact Type',
+        'contact_type_placeholder': 'Select contact type',
+        'contact_type_reservation': 'Table Reservation',
+        'contact_type_event': 'Private Event / Catering',
+        'contact_type_feedback': 'Feedback / Complaint',
+        'contact_type_general': 'General Inquiry',
+        'contact_type_other': 'Other',
+        'first_name': 'First Name',
+        'first_name_placeholder': 'Your first name',
+        'last_name': 'Last Name',
+        'last_name_placeholder': 'Your last name',
+        'email_address': 'Email Address',
+        'email_placeholder': 'your.email@example.com',
+        'phone_number': 'Phone Number',
+        'phone_placeholder': '+358 XX XXX XXXX',
+        'preferred_date': 'Preferred Date',
+        'preferred_time': 'Preferred Time',
+        'select_time': 'Select time',
+        'party_size': 'Party Size',
+        'select_size': 'Select size',
+        'party_size_1': '1 Person',
+        'party_size_2': '2 People',
+        'party_size_3': '3 People',
+        'party_size_4': '4 People',
+        'party_size_5': '5 People',
+        'party_size_6': '6 People',
+        'party_size_7': '7 People',
+        'party_size_8': '8 People',
+        'party_size_9_15': '9-15 People',
+        'party_size_16_plus': '16+ People (Private Event)',
+        'subject': 'Subject',
+        'subject_placeholder': 'Brief subject of your message',
+        'message': 'Message',
+        'message_placeholder': 'Please provide details about your inquiry, reservation requirements, or feedback...',
+        'copy_email': 'Send me a copy of this message',
+        'send_message': 'Send Message',
+        'sending': 'Sending...',
+        'success_message': 'Your message has been sent successfully! We\'ll get back to you soon.',
+        'error_message': 'There was an error sending your message. Please try again or contact us directly.',
+        'contact_type_required': 'Please select a contact type.',
+        'first_name_required': 'First name is required.',
+        'last_name_required': 'Last name is required.',
+        'email_required': 'Email is required.',
+        'email_invalid': 'Please enter a valid email address.',
+        'message_required': 'Please enter your message.',
+        'opening_hours_title': 'Opening Hours',
+        'monday_friday': 'Monday - Friday: 11:00 - 21:00',
+        'saturday': 'Saturday: 12:00 - 22:00',
+        'sunday': 'Sunday: 12:00 - 20:00',
+        'contact_us_or_make_reservation': 'Contact Us or Make a Reservation'
+      },
+      fi: {
+        'menu': 'Menu',
+        'about': 'Tietoa',
+        'contact': 'Yhteystiedot',
+        'order_now': 'Tilaa nyt',
+        'order_on_wolt': 'Tilaa Woltista',
+        'order_on_bolt': 'Tilaa Bolt Foodista',
+        'order_on_foodora': 'Tilaa Foodorasta',
+        'view_menu': 'Katso menu',
+        'home': 'Etusivu',
+        'categories': 'Kategoriat',
+        'all_categories': 'Kaikki kategoriat',
+        'search_menu': 'Hae menusta...',
+        'dietary_filters': 'Ruokavalio',
+        'allergen_filters': 'Allergeenit',
+        'vegan': 'Vegaaninen',
+        'vegetarian': 'Vegetaarinen',
+        'halal': 'Halal',
+        'gluten_free': 'Gluteeniton',
+        'dairy_free': 'Maidoton',
+        'lactose_free': 'Laktoositon',
+        'keto': 'Keto',
+        'spicy': 'Tulinen',
+        'Fresh Daily': 'Tuoreena päivittäin',
+        'Why Choose Bengal Ruokopaikka?': 'Miksi valita Spice Döner?',
+        'Fresh ingredients, authentic flavors, healthy options': 'Tuoreita ainesosia, aitoja makuja, terveellisiä vaihtoehtoja',
+        'opening_hours': 'Aukioloajat',
+        'closed': 'Suljettu',
+        'open': 'Auki',
+        'opens_at': 'Aukeaa klo',
+        'closes_at': 'Sulkeutuu klo',
+        'phone': 'Puhelin',
+        'email': 'Sähköposti',
+        'address': 'Osoite',
+        'last_updated': 'Päivitetty',
+        'loading': 'Ladataan',
+        'error_loading_menu': 'Virhe ladattaessa menua',
+        'retry': 'Yritä uudelleen',
+        'from': 'alkaen',
+        'unavailable': 'Ei saatavilla',
+        'add_to_order': 'Lisää tilaukseen',
+        'options': 'Lisävalinnat',
+        'select_options': 'Valitse lisävalinnat',
+        'required': 'Pakollinen',
+        'optional': 'Valinnainen',
+        'privacy_policy': 'Tietosuojakäytäntö',
+        'terms_of_service': 'Käyttöehdot',
+        'cookie_consent': 'Tämä sivusto käyttää evästeitä parantaakseen käyttökokemustasi.',
+        'accept_cookies': 'Hyväksy',
+        'decline_cookies': 'Kieltäydy',
+        'catering': 'Pitopalvelu',
+        'faq': 'UKK',
+        'locations': 'Toimipaikat',
+        'dietary_guide': 'Ruokavalio-opas',
+        'about_story_title': 'Tarinaamme: Perinne Kohtaa Modernin Maun',
+        'about_story_p1': 'Spice Dönerissa uskomme, että pikaruoan ei tarvitse olla "roskaruokaa". Aloitimme yksinkertaisella tehtävällä: nostaa perinteinen döner-kokemus eläväksi, tuoreeksi ja gourmet-ateriaksi, josta kaikki—ruokavalioista riippumatta—voivat nauttia.',
+        'about_story_p2': 'Tunnusomaisesta käsin leikatusta döneristämme värikkäisiin mezze-kulhoihimme, jokainen tarjoamamme lautanen on tasapainoa Välimeren perinteen ja modernin kulinaarisen taiteen välillä.',
+        'about_different_title': 'Miksi Spice Döner on Erilainen',
+        'about_inclusivity_title': 'Todellinen Ruokavaliomyönteisyys',
+        'about_inclusivity_text': 'Olemme ylpeitä siitä, että olemme yksi kaupungin ruokavaliomyönteisimmistä paikoista. Oletpa vegaani (V), gluteeniton (G) tai laktoositon (L), menumme on suunniteltu sinulle. Lähes kaikki pitamme, burgerimme ja kulhomme voidaan räätälöidä elämäntapaasi sopiviksi—makua uhraamatta.',
+        'about_freshness_title': 'Tuoreus Ensin',
+        'about_freshness_text': 'Keittiömme ovat täynnä tuoreen persiljan, sumakilla marinoitujen sipulien ja kotitekoisen hummuksen tuoksua. Emme vain "kokoa" ruokaa; valmistamme sitä käyttäen tuoreita granaattiomensiemeniä, rapeaa punakaalia ja aitoa halloumia.',
+        'about_chef_title': '"Ole Kokki" -Kokemus',
+        'about_chef_text': 'Uskomme ruokaan, joka sopii mielialaasi. Siksi tarjoamme "Oma valinta" -vaihtoehtoja, joiden avulla voit rakentaa kulhon tai pitan, joka on yhtä ainutlaatuinen kuin makuaistisi.',
+        'about_promise_title': 'Lupauksemme',
+        'about_promise_text': 'Oletpa nappamassakana döner pitaa matkalla, istumassa perheen mezze-juhlissa tai hemmottelemassa lapsia erikoisella lasten menullämme, saat laadukkaita ainesosia, rohkeita mausteita ja intohimolla valmistettua ruokaa.',
+        'about_closing': 'Koe mauste. Maista tuoreus. Tervetuloa Spice Döneriin.',
+        
+        // Contact form translations (Finnish)
+        'contact_page_title': 'Yhteystiedot & Varaukset',
+        'contact_page_subtitle': 'Ota yhteyttä Spice Döneriin tai tee varaus',
+        'visit_us': 'Tule Käymään',
+        'contact_type': 'Yhteydenoton Tyyppi',
+        'contact_type_placeholder': 'Valitse yhteydenoton tyyppi',
+        'contact_type_reservation': 'Pöytävaraus',
+        'contact_type_event': 'Yksityistilaisuus / Pitopalvelu',
+        'contact_type_feedback': 'Palaute / Valitus',
+        'contact_type_general': 'Yleinen Kysely',
+        'contact_type_other': 'Muu',
+        'first_name': 'Etunimi',
+        'first_name_placeholder': 'Sinun etunimesi',
+        'last_name': 'Sukunimi',
+        'last_name_placeholder': 'Sinun sukunimesi',
+        'email_address': 'Sähköpostiosoite',
+        'email_placeholder': 'sinun.sahkoposti@example.com',
+        'phone_number': 'Puhelinnumero',
+        'phone_placeholder': '+358 XX XXX XXXX',
+        'preferred_date': 'Toivottu Päivämäärä',
+        'preferred_time': 'Toivottu Aika',
+        'select_time': 'Valitse aika',
+        'party_size': 'Seurueen Koko',
+        'select_size': 'Valitse koko',
+        'party_size_1': '1 Henkilö',
+        'party_size_2': '2 Henkilöä',
+        'party_size_3': '3 Henkilöä',
+        'party_size_4': '4 Henkilöä',
+        'party_size_5': '5 Henkilöä',
+        'party_size_6': '6 Henkilöä',
+        'party_size_7': '7 Henkilöä',
+        'party_size_8': '8 Henkilöä',
+        'party_size_9_15': '9-15 Henkilöä',
+        'party_size_16_plus': '16+ Henkilöä (Yksityistilaisuus)',
+        'subject': 'Aihe',
+        'subject_placeholder': 'Lyhyt kuvaus viestistäsi',
+        'message': 'Viesti',
+        'message_placeholder': 'Kerro tarkemmin kyselystäsi, varaustoiveistasi tai palautteestasi...',
+        'copy_email': 'Lähetä minulle kopio tästä viestistä',
+        'send_message': 'Lähetä Viesti',
+        'sending': 'Lähetetään...',
+        'success_message': 'Viestisi on lähetetty onnistuneesti! Otamme sinuun yhteyttä pian.',
+        'error_message': 'Viestin lähettämisessä tapahtui virhe. Yritä uudelleen tai ota meihin yhteyttä suoraan.',
+        'contact_type_required': 'Valitse yhteydenoton tyyppi.',
+        'first_name_required': 'Etunimi on pakollinen.',
+        'last_name_required': 'Sukunimi on pakollinen.',
+        'email_required': 'Sähköposti on pakollinen.',
+        'email_invalid': 'Anna kelvollinen sähköpostiosoite.',
+        'message_required': 'Kirjoita viestisi.',
+        'opening_hours_title': 'Aukioloajat',
+        'monday_friday': 'Maanantai - Perjantai: 11:00 - 21:00',
+        'saturday': 'Lauantai: 12:00 - 22:00',
+        'sunday': 'Sunnuntai: 12:00 - 20:00',
+        'contact_us_or_make_reservation': 'Ota Yhteyttä tai Tee Varaus'
+      }
+    };
+
+    const currentLang = this.getCurrentLanguage();
+    return translations[currentLang][key] || key;
+  }
+}

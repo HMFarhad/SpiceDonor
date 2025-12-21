@@ -1,0 +1,238 @@
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { MenuDataService, SeoService, I18nService } from '@core/services';
+import { SiteSettings, Special } from '@core/models';
+
+@Component({
+  selector: 'app-home',
+  template: `
+    <div class="home-page">
+      <!-- Hero Section -->
+      <section class="hero" *ngIf="settings$ | async as settings">
+        <div class="container">
+          <div class="hero-content">
+            <div class="hero-text">
+              <h1 class="hero-title">
+                {{ i18n.getLocalizedContent(settings.heroTitle) }}
+              </h1>
+              <p class="hero-subtitle">
+                {{ i18n.getLocalizedContent(settings.heroSubtitle) }}
+              </p>
+              <div class="hero-actions">
+                <a 
+                  [routerLink]="settings.ctaPrimaryLink" 
+                  class="btn btn-primary btn-lg">
+                  {{ i18n.getLocalizedContent(settings.ctaPrimaryText) }}
+                </a>
+                <app-platform-buttons 
+                  [variant]="'compact'"
+                  [fallbackLinks]="{
+                    wolt: settings.externalOrderWoltUrl,
+                    foodora: settings.externalOrderFoodoraUrl
+                  }">
+                </app-platform-buttons>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Highlights Section -->
+      <section class="section highlights">
+        <div class="container">
+          <div class="section-header text-center">
+            <h2>{{ i18n.translate('Why Choose Spice Döner?') }}</h2>
+            <p class="text-muted">{{ i18n.translate('Fresh ingredients, authentic flavors, healthy options') }}</p>
+          </div>
+          
+          <div class="grid grid-3">
+            <div class="highlight-card card fresh-daily-bg">
+              <div class="card-body text-center">
+                <div class="highlight-icon"></div>
+                <h3 class="highlight-title">{{ i18n.translate('Fresh Daily') }}</h3>
+                <p class="text-muted">All ingredients are sourced fresh and prepared daily in our kitchen.</p>
+              </div>
+            </div>
+
+            <div class="highlight-card card vegan-bg">
+              <div class="card-body text-center">
+                <div class="highlight-icon"></div>
+                <h3 class="highlight-title">{{ i18n.translate('Vegan') }}</h3>
+                <p class="text-muted">Delicious plant-based options perfect for vegan diets.</p>
+              </div>
+            </div>
+
+            <div class="highlight-card card vegetarian-bg">
+              <div class="card-body text-center">
+                <div class="highlight-icon"></div>
+                <h3 class="highlight-title">{{ i18n.translate('Vegetarian') }}</h3>
+                <p class="text-muted">Wide selection of vegetarian dishes for every taste.</p>
+              </div>
+            </div>
+
+            <div class="highlight-card card gluten-free-bg">
+              <div class="card-body text-center">
+                <div class="highlight-icon"></div>
+                <h3 class="highlight-title">{{ i18n.translate('Gluten Free') }}</h3>
+                <p class="text-muted">Many gluten-free options available for dietary restrictions.</p>
+              </div>
+            </div>
+
+            <div class="highlight-card card lactose-free-bg">
+              <div class="card-body text-center">
+                <div class="highlight-icon"></div>
+                <h3 class="highlight-title">{{ i18n.translate('Lactose Free') }}</h3>
+                <p class="text-muted">Dairy-free alternatives for lactose intolerant guests.</p>
+              </div>
+            </div>
+
+            <div class="highlight-card card halal-bg">
+              <div class="card-body text-center">
+                <div class="highlight-icon"></div>
+                <h3 class="highlight-title">{{ i18n.translate('Halal') }}</h3>
+                <p class="text-muted">All our meat is halal-certified following Islamic dietary laws.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Specials Section -->
+      <section class="section specials" *ngIf="activeSpecials$ | async as specials">
+        <div class="container">
+          <div class="section-header text-center">
+            <h2>{{ i18n.translate('Current Specials') }}</h2>
+            <p class="text-muted">{{ i18n.translate('Limited time offers') }}</p>
+          </div>
+          
+          <div class="grid grid-2">
+            <div *ngFor="let special of specials" class="special-card card">
+              <div class="card-body">
+                <h3 class="special-title">{{ i18n.getLocalizedContent(special.title) }}</h3>
+                <p class="special-description">{{ i18n.getLocalizedContent(special.description) }}</p>
+                <div class="special-price">
+                  <span 
+                    *ngIf="special.discountPrice" 
+                    class="price-original">
+                    {{ i18n.formatPrice(special.price) }}
+                  </span>
+                  <span class="price-current">
+                    {{ i18n.formatPrice(special.discountPrice || special.price) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="section cta-section">
+        <div class="container">
+          <div class="cta-content text-center">
+            <h2>{{ i18n.translate('Ready to order?') }}</h2>
+            <p class="text-muted">{{ i18n.translate('Choose from our delivery partners') }}</p>
+            <div class="cta-actions" *ngIf="settings$ | async as settings">
+              <app-platform-buttons 
+                [variant]="'full'"
+                [fallbackLinks]="{
+                  wolt: settings.externalOrderWoltUrl,
+                  foodora: settings.externalOrderFoodoraUrl
+                }">
+              </app-platform-buttons>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Location Section -->
+      <section class="section location-section">
+        <div class="container">
+          <div class="section-header text-center">
+            <h2>{{ i18n.translate('Find Us') }}</h2>
+            <p class="text-muted">{{ i18n.translate('Visit our restaurant in Helsinki') }}</p>
+          </div>
+          
+          <div class="grid grid-2 location-grid" *ngIf="settings$ | async as settings">
+            <div class="location-info">
+              <div class="info-card card">
+                <div class="card-body">
+                  <h3>{{ i18n.translate('Location') }}</h3>
+                  <p class="address">
+                    <strong>{{ settings.addressLine1 }}</strong><br>
+                    {{ settings.postalCode }} {{ settings.city }}
+                  </p>
+                  
+                  <h4>{{ i18n.translate('Opening Hours') }}</h4>
+                  <ul class="hours-list">
+                    <li>{{ i18n.translate('Monday - Friday') }}: 11:00 - 21:00</li>
+                    <li>{{ i18n.translate('Saturday') }}: 12:00 - 22:00</li>
+                    <li>{{ i18n.translate('Sunday') }}: 12:00 - 20:00</li>
+                  </ul>
+                  
+                  <h4>{{ i18n.translate('Contact') }}</h4>
+                  <p class="contact-info">
+                    <strong>{{ i18n.translate('Phone') }}:</strong> {{ settings.phone }}<br>
+                    <strong>{{ i18n.translate('Email') }}:</strong> {{ settings.email }}
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="location-map">
+              <div class="map-container">
+                <iframe 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1949.8766879397847!2d25.010456716094384!3d60.25114438197743!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x468df60c2b3d6a8d%3A0x5048c73b8e4b1c1e!2sMalminkaari%209%2C%2000700%20Helsinki!5e0!3m2!1sen!2sfi!4v1703078400000!5m2!1sen!2sfi"
+                  width="100%" 
+                  height="350"
+                  style="border:0; border-radius: 8px;" 
+                  allowfullscreen="" 
+                  loading="lazy" 
+                  referrerpolicy="no-referrer-when-downgrade"
+                  [attr.aria-label]="'Map showing location of Spice Döner at Malminkaari 9, Helsinki'">
+                </iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  `,
+  styleUrls: ['./home.component.scss']
+})
+export class HomeComponent implements OnInit {
+  settings$: Observable<SiteSettings | null>;
+  activeSpecials$: Observable<Special[]>;
+
+  constructor(
+    private menuDataService: MenuDataService,
+    private seoService: SeoService,
+    public i18n: I18nService
+  ) {
+    this.settings$ = this.menuDataService.menuData$.pipe(
+      map(data => data?.settings || null)
+    );
+
+    this.activeSpecials$ = this.menuDataService.menuData$.pipe(
+      map(data => data?.specials?.filter(special => special.active) || [])
+    );
+  }
+
+  ngOnInit(): void {
+    // Update SEO for home page
+    this.settings$.subscribe(settings => {
+      if (settings) {
+        this.seoService.updateSeoData({
+          title: this.i18n.getLocalizedContent(settings.heroTitle) + ' - Fresh Middle Eastern Cuisine',
+          description: this.i18n.getLocalizedContent(settings.heroSubtitle),
+          keywords: 'hummus, middle eastern food, helsinki restaurant, vegan, vegetarian, healthy food, fresh',
+          type: 'website'
+        });
+
+        // Generate JSON-LD structured data
+        this.seoService.generateRestaurantJsonLd(settings);
+      }
+    });
+  }
+}

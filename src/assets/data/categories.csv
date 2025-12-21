@@ -1,0 +1,9 @@
+id,name_en,name_fi,description_en,description_fi,sort_order,visible
+pita_meat,Pita/Burger/Wrap - Meat,Pita/Burger/Wrappi - Kana & Nauta,Chicken and beef döner options,Kana- ja nautatäytteiset vaihtoehdot,1,TRUE
+pita_veg,Pita/Burger/Wrap - Vegetarian,Pita/Burger/Wrappi - Kasvis & Vegaani,Vegetarian and vegan options,Kasvis- ja vegaanivaihtoehdot,2,TRUE
+mezze_bowls,Mezze Bowls,Mezze Bowlit,Traditional mezze style bowls,Perinteisiä mezze-tyyliä bowleja,3,TRUE
+doner_bowls,Döner Bowls,Döner Bowlit,Döner served in bowl format,Döner-annoksia kulhoissa,4,TRUE
+children,Children's Menu,Lasten Menu,Special options for children,Erikoisannoksia lapsille,5,TRUE
+sides,Sides,Lisukkeet,Side dishes and extras,Lisukkeet ja lisäkkeet,6,TRUE
+beverages,Beverages,Juomat,Soft drinks and refreshments,Virvoitusjuomat,7,TRUE
+dips,Dips & Sauces,Dipit,Various dips and sauces,Erilaisia dippejä ja kastikkeita,8,TRUE
