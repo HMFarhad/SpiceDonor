@@ -8,46 +8,42 @@ This application is configured for deployment to GitHub Pages at `hmfarhad.githu
 - GitHub repository named `SpiceDonor`
 - GitHub Pages enabled for the repository
 
-### Build and Deploy Steps
+### Automated Deployment
 
-1. **Build for production:**
-   ```bash
-   ng build --configuration production
-   ```
+The deployment is now fully automated using GitHub Actions. Simply push to the `main` branch:
 
-2. **Copy build files:**
-   The build creates files in `dist/restaurant-website/`. Copy all contents to your GitHub repository.
+```bash
+git add .
+git commit -m "Your commit message"
+git push origin main
+```
 
-3. **GitHub Repository Setup:**
-   - Create repository: `https://github.com/hmfarhad/SpiceDonor`
-   - Enable GitHub Pages in repository settings
-   - Set source to "Deploy from a branch" and select "gh-pages" branch
+### GitHub Pages Setup
 
-4. **Deploy Commands:**
-   ```bash
-   # Build the application
-   ng build --configuration production
+1. Go to repository: `https://github.com/hmfarhad/SpiceDonor`
+2. Navigate to **Settings** → **Pages**
+3. Set source to **GitHub Actions**
+4. The GitHub Actions workflow will automatically:
+   - Install dependencies
+   - Build the Angular application
+   - Deploy to GitHub Pages
 
-   # Navigate to dist folder
-   cd dist/restaurant-website
+### Manual Build (Optional)
 
-   # Initialize git (if not already done)
-   git init
-   git add .
-   git commit -m "Deploy Spice Döner website"
-
-   # Add GitHub remote
-   git remote add origin https://github.com/hmfarhad/SpiceDonor.git
-   git branch -M gh-pages
-   git push -f origin gh-pages
-   ```
+If you need to build locally:
+```bash
+npm install
+npm run build
+```
 
 ### Configuration Details
 
 - **Base HREF:** Set to `/SpiceDonor/` for subdirectory deployment
+- **GitHub Actions:** Automated build and deployment workflow
 - **Routing:** Configured with 404.html for GitHub Pages SPA routing
 - **Assets:** Includes all necessary files (images, data, manifest)
 - **PWA:** Service worker configured for GitHub Pages URLs
+- **Build Output:** `dist/restaurant-website/browser/` is deployed
 
 ### File Structure After Build:
 ```
@@ -67,7 +63,9 @@ After deployment, the site should be available at:
 `https://hmfarhad.github.io/SpiceDonor/`
 
 ### Troubleshooting
-- Ensure GitHub Pages is enabled in repository settings
-- Check that all files are committed to the gh-pages branch
+- Ensure GitHub Pages is enabled and set to "GitHub Actions" in repository settings
+- Check the Actions tab for build/deployment status
 - Verify the base href is correctly set to `/SpiceDonor/`
-- Wait a few minutes for GitHub Pages to update after pushing changes
+- Check that the workflow file `.github/workflows/deploy.yml` exists
+- Wait a few minutes for GitHub Pages to update after successful deployment
+- Review workflow logs if deployment fails

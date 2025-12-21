@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration production",
     "build:ssr": "ng build && ng run restaurant-website:server",
     "serve:ssr": "node dist/restaurant-website/server/main.js",
     "test": "ng test",
