@@ -2,10 +2,10 @@
 
 ## GitHub Pages Deployment
 
-This application is configured for deployment to GitHub Pages at `hmfarhad.github.io/BengalRuokopaikka`.
+This application is configured for deployment to GitHub Pages at `hmfarhad.github.io/SpiceDonor`.
 
 ### Prerequisites
-- GitHub repository named `BengalRuokopaikka`
+- GitHub repository named `SpiceDonor`
 - GitHub Pages enabled for the repository
 
 ### Build and Deploy Steps
@@ -19,9 +19,9 @@ This application is configured for deployment to GitHub Pages at `hmfarhad.githu
    The build creates files in `dist/restaurant-website/`. Copy all contents to your GitHub repository.
 
 3. **GitHub Repository Setup:**
-   - Create repository: `https://github.com/hmfarhad/BengalRuokopaikka`
+   - Create repository: `https://github.com/hmfarhad/SpiceDonor`
    - Enable GitHub Pages in repository settings
-   - Set source to "Deploy from a branch" and select "main" branch
+   - Set source to "Deploy from a branch" and select "gh-pages" branch
 
 4. **Deploy Commands:**
    ```bash
@@ -37,14 +37,14 @@ This application is configured for deployment to GitHub Pages at `hmfarhad.githu
    git commit -m "Deploy Spice Döner website"
 
    # Add GitHub remote
-   git remote add origin https://github.com/hmfarhad/BengalRuokopaikka.git
-   git branch -M main
-   git push -u origin main
+   git remote add origin https://github.com/hmfarhad/SpiceDonor.git
+   git branch -M gh-pages
+   git push -f origin gh-pages
    ```
 
 ### Configuration Details
 
-- **Base HREF:** Set to `/BengalRuokopaikka/` for subdirectory deployment
+- **Base HREF:** Set to `/SpiceDonor/` for subdirectory deployment
 - **Routing:** Configured with 404.html for GitHub Pages SPA routing
 - **Assets:** Includes all necessary files (images, data, manifest)
 - **PWA:** Service worker configured for GitHub Pages URLs
@@ -52,7 +52,7 @@ This application is configured for deployment to GitHub Pages at `hmfarhad.githu
 ### File Structure After Build:
 ```
 dist/restaurant-website/
-├── index.html (with base href="/BengalRuokopaikka/")
+├── index.html (with base href="/SpiceDonor/")
 ├── 404.html (SPA routing fallback)
 ├── CNAME (custom domain config)
 ├── _redirects (fallback routing)
@@ -64,10 +64,10 @@ dist/restaurant-website/
 
 ### Verification
 After deployment, the site should be available at:
-`https://hmfarhad.github.io/BengalRuokopaikka/`
+`https://hmfarhad.github.io/SpiceDonor/`
 
 ### Troubleshooting
 - Ensure GitHub Pages is enabled in repository settings
-- Check that all files are committed to the main branch
-- Verify the base href is correctly set to `/BengalRuokopaikka/`
+- Check that all files are committed to the gh-pages branch
+- Verify the base href is correctly set to `/SpiceDonor/`
 - Wait a few minutes for GitHub Pages to update after pushing changes
