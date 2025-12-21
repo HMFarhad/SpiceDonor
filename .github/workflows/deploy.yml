@@ -1,4 +1,4 @@
-name: Build and Deploy Angular App
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -14,12 +14,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
-    
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
     - name: Checkout
@@ -37,19 +33,13 @@ jobs:
     - name: Build Angular app
       run: npm run build
 
-    - name: Copy build files to root
-      run: |
-        mkdir -p deploy
-        cp -r dist/restaurant-website/browser/* deploy/
-        ls -la deploy/
-
     - name: Setup Pages
       uses: actions/configure-pages@v4
 
-    - name: Upload artifact
+    - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: 'deploy'
+        path: 'dist/restaurant-website/browser'
 
     - name: Deploy to GitHub Pages
       id: deployment
