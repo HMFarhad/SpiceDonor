@@ -6,13 +6,6 @@ import emailjs from '@emailjs/browser';
 @Component({
   template: `
     <div class="page">
-      <div class="page-header">
-        <div class="container">
-          <h1>{{ i18n.translate('contact_page_title') }}</h1>
-          <p class="text-muted">{{ i18n.translate('contact_page_subtitle') }}</p>
-        </div>
-      </div>
-      
       <div class="section">
         <div class="container">
           <div class="row">

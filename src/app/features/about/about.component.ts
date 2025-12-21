@@ -5,13 +5,6 @@ import { I18nService } from '@core/services';
   selector: 'app-about',
   template: `
     <div class="page">
-      <div class="page-header">
-        <div class="container">
-          <h1>{{ i18n.translate('about') }}</h1>
-          <p class="text-muted">{{ i18n.translate('Fresh ingredients, authentic flavors, healthy options') }}</p>
-        </div>
-      </div>
-      
       <div class="section">
         <div class="container">
           <div class="about-content">

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ViewportScroller } from '@angular/common';
 import { MenuDataService, SeoService, I18nService } from '@core/services';
 import { Category, MenuItem, MenuFilters } from '@core/models';
 
@@ -8,14 +9,6 @@ import { Category, MenuItem, MenuFilters } from '@core/models';
   selector: 'app-menu',
   template: `
     <div class="menu-page">
-      <!-- Page Header -->
-      <section class="page-header">
-        <div class="container">
-          <h1>{{ i18n.translate('menu') }}</h1>
-          <p class="text-muted">{{ i18n.translate('Fresh ingredients, authentic flavors') }}</p>
-        </div>
-      </section>
-
       <!-- Menu Content -->
       <section class="section">
         <div class="container">
@@ -64,7 +57,8 @@ import { Category, MenuItem, MenuFilters } from '@core/models';
             <div class="menu-items" *ngFor="let category of visibleCategories$ | async">
               <div 
                 *ngIf="!activeCategory || activeCategory === category.id"
-                class="category-section">
+                class="category-section"
+                [id]="'category-' + category.id">
                 <h2 class="category-title">{{ i18n.getLocalizedContent(category.name) }}</h2>
                 <p 
                   *ngIf="category.description"
@@ -146,6 +140,7 @@ export class MenuComponent implements OnInit {
   constructor(
     private menuDataService: MenuDataService,
     private seoService: SeoService,
+    private viewportScroller: ViewportScroller,
     public i18n: I18nService
   ) {
     this.visibleCategories$ = this.menuData$.pipe(
@@ -172,6 +167,13 @@ export class MenuComponent implements OnInit {
 
   setActiveCategory(categoryId: string): void {
     this.activeCategory = this.activeCategory === categoryId ? null : categoryId;
+    
+    // Scroll to the category section after a short delay to allow DOM updates
+    if (this.activeCategory) {
+      setTimeout(() => {
+        this.viewportScroller.scrollToAnchor('category-' + categoryId);
+      }, 100);
+    }
   }
 
   getItemsForCategory(items: MenuItem[], categoryId: string): MenuItem[] {

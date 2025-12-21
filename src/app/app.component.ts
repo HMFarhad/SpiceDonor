@@ -13,6 +13,14 @@ import { I18nService, SeoService, AnalyticsService } from '@core/services';
       </main>
       <app-footer></app-footer>
       <app-cookie-banner></app-cookie-banner>
+      
+      <!-- Floating Menu Button for Mobile -->
+      <a 
+        routerLink="/menu" 
+        class="floating-menu-btn btn btn-primary"
+        [attr.aria-label]="i18nService.translate('view_menu')">
+        {{ i18nService.translate('view_menu') }}
+      </a>
     </div>
   `,
   styleUrls: ['./app.component.scss']
@@ -21,7 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   constructor(
-    private i18nService: I18nService,
+    public i18nService: I18nService,
     private seoService: SeoService,
     private analyticsService: AnalyticsService
   ) {}

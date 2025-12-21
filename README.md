@@ -1,6 +1,6 @@
 # Spice Döner - Restaurant Website
 
-A modern, fast, and SEO-friendly Angular 18 restaurant website with dynamic menu management inspired by [hummushouse.fi](https://hummushouse.fi/). Features spreadsheet-driven content management, external ordering integration, and comprehensive accessibility support.
+A modern, fast, and SEO-friendly Angular 18 restaurant website with dynamic menu management. Features spreadsheet-driven content management, external ordering integration, and comprehensive accessibility support.
 
 ## 🌟 Features
 
