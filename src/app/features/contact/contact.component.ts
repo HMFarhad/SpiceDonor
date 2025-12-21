@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { I18nService } from '@core/services';
 import emailjs from '@emailjs/browser';
 
@@ -51,7 +50,7 @@ import emailjs from '@emailjs/browser';
               </div>
             </div>
             
-            <!-- Contact/Reservation Form -->
+            <!-- Contact Form -->
             <div class="col-md-8">
               <div class="contact-form-card">
                 <h2>{{ i18n.translate('contact_us_or_make_reservation') }}</h2>
@@ -67,161 +66,42 @@ import emailjs from '@emailjs/browser';
                   {{ i18n.translate('error_message') }}
                 </div>
                 
-                <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" novalidate>
-                  <!-- Contact Type Selection -->
-                  <div class="form-group">
-                    <label for="contactType">{{ i18n.translate('contact_type') }} *</label>
-                    <select id="contactType" class="form-control" formControlName="contactType">
-                      <option value="">{{ i18n.translate('contact_type_placeholder') }}</option>
-                      <option value="reservation">{{ i18n.translate('contact_type_reservation') }}</option>
-                      <option value="event">{{ i18n.translate('contact_type_event') }}</option>
-                      <option value="feedback">{{ i18n.translate('contact_type_feedback') }}</option>
-                      <option value="general">{{ i18n.translate('contact_type_general') }}</option>
-                      <option value="other">{{ i18n.translate('contact_type_other') }}</option>
-                    </select>
-                    <div *ngIf="contactForm.get('contactType')?.invalid && contactForm.get('contactType')?.touched" 
-                         class="invalid-feedback">
-                      {{ i18n.translate('contact_type_required') }}
-                    </div>
-                  </div>
-                  
+                <form id="contact-form" (submit)="onSubmit($event)">
                   <div class="row">
                     <div class="col-md-6">
                       <div class="form-group">
-                        <label for="firstName">{{ i18n.translate('first_name') }} *</label>
-                        <input type="text" id="firstName" class="form-control" 
-                               formControlName="firstName" [placeholder]="i18n.translate('first_name_placeholder')">
-                        <div *ngIf="contactForm.get('firstName')?.invalid && contactForm.get('firstName')?.touched" 
-                             class="invalid-feedback">
-                          {{ i18n.translate('first_name_required') }}
-                        </div>
+                        <label for="first_name">{{ i18n.translate('first_name') }} *</label>
+                        <input type="text" id="first_name" name="first_name" class="form-control" 
+                               [placeholder]="i18n.translate('first_name_placeholder')" required>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
-                        <label for="lastName">{{ i18n.translate('last_name') }} *</label>
-                        <input type="text" id="lastName" class="form-control" 
-                               formControlName="lastName" [placeholder]="i18n.translate('last_name_placeholder')">
-                        <div *ngIf="contactForm.get('lastName')?.invalid && contactForm.get('lastName')?.touched" 
-                             class="invalid-feedback">
-                          {{ i18n.translate('last_name_required') }}
-                        </div>
+                        <label for="last_name">{{ i18n.translate('last_name') }} *</label>
+                        <input type="text" id="last_name" name="last_name" class="form-control" 
+                               [placeholder]="i18n.translate('last_name_placeholder')" required>
                       </div>
                     </div>
                   </div>
                   
                   <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                       <div class="form-group">
                         <label for="email">{{ i18n.translate('email_address') }} *</label>
-                        <input type="email" id="email" class="form-control" 
-                               formControlName="email" [placeholder]="i18n.translate('email_placeholder')">
-                        <div *ngIf="contactForm.get('email')?.invalid && contactForm.get('email')?.touched" 
-                             class="invalid-feedback">
-                          <span *ngIf="contactForm.get('email')?.errors?.['required']">{{ i18n.translate('email_required') }}</span>
-                          <span *ngIf="contactForm.get('email')?.errors?.['email']">{{ i18n.translate('email_invalid') }}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="phone">{{ i18n.translate('phone_number') }}</label>
-                        <input type="tel" id="phone" class="form-control" 
-                               formControlName="phone" [placeholder]="i18n.translate('phone_placeholder')">
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <!-- Reservation Specific Fields -->
-                  <div *ngIf="contactForm.get('contactType')?.value === 'reservation' || 
-                              contactForm.get('contactType')?.value === 'event'" class="reservation-fields">
-                    <div class="row">
-                      <div class="col-md-4">
-                        <div class="form-group">
-                          <label for="reservationDate">{{ i18n.translate('preferred_date') }}</label>
-                          <input type="date" id="reservationDate" class="form-control" 
-                                 formControlName="reservationDate" [min]="minDate">
-                        </div>
-                      </div>
-                      <div class="col-md-4">
-                        <div class="form-group">
-                          <label for="reservationTime">{{ i18n.translate('preferred_time') }}</label>
-                          <select id="reservationTime" class="form-control" formControlName="reservationTime">
-                            <option value="">{{ i18n.translate('select_time') }}</option>
-                            <option value="11:00">11:00</option>
-                            <option value="11:30">11:30</option>
-                            <option value="12:00">12:00</option>
-                            <option value="12:30">12:30</option>
-                            <option value="13:00">13:00</option>
-                            <option value="13:30">13:30</option>
-                            <option value="14:00">14:00</option>
-                            <option value="14:30">14:30</option>
-                            <option value="15:00">15:00</option>
-                            <option value="15:30">15:30</option>
-                            <option value="16:00">16:00</option>
-                            <option value="16:30">16:30</option>
-                            <option value="17:00">17:00</option>
-                            <option value="17:30">17:30</option>
-                            <option value="18:00">18:00</option>
-                            <option value="18:30">18:30</option>
-                            <option value="19:00">19:00</option>
-                            <option value="19:30">19:30</option>
-                            <option value="20:00">20:00</option>
-                            <option value="20:30">20:30</option>
-                            <option value="21:00">21:00</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div class="col-md-4">
-                        <div class="form-group">
-                          <label for="partySize">{{ i18n.translate('party_size') }}</label>
-                          <select id="partySize" class="form-control" formControlName="partySize">
-                            <option value="">{{ i18n.translate('select_size') }}</option>
-                            <option value="1">{{ i18n.translate('party_size_1') }}</option>
-                            <option value="2">{{ i18n.translate('party_size_2') }}</option>
-                            <option value="3">{{ i18n.translate('party_size_3') }}</option>
-                            <option value="4">{{ i18n.translate('party_size_4') }}</option>
-                            <option value="5">{{ i18n.translate('party_size_5') }}</option>
-                            <option value="6">{{ i18n.translate('party_size_6') }}</option>
-                            <option value="7">{{ i18n.translate('party_size_7') }}</option>
-                            <option value="8">{{ i18n.translate('party_size_8') }}</option>
-                            <option value="9-15">{{ i18n.translate('party_size_9_15') }}</option>
-                            <option value="16+">{{ i18n.translate('party_size_16_plus') }}</option>
-                          </select>
-                        </div>
+                        <input type="email" id="email" name="email" class="form-control" 
+                               [placeholder]="i18n.translate('email_placeholder')" required>
                       </div>
                     </div>
                   </div>
                   
                   <div class="form-group">
-                    <label for="subject">{{ i18n.translate('subject') }}</label>
-                    <input type="text" id="subject" class="form-control" 
-                           formControlName="subject" [placeholder]="i18n.translate('subject_placeholder')">
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="message">{{ i18n.translate('message') }} *</label>
-                    <textarea id="message" class="form-control" rows="6" 
-                              formControlName="message" 
-                              [placeholder]="i18n.translate('message_placeholder')"></textarea>
-                    <div *ngIf="contactForm.get('message')?.invalid && contactForm.get('message')?.touched" 
-                         class="invalid-feedback">
-                      {{ i18n.translate('message_required') }}
-                    </div>
-                  </div>
-                  
-                  <div class="form-group">
-                    <div class="form-check">
-                      <input type="checkbox" id="copyEmail" class="form-check-input" formControlName="copyEmail">
-                      <label for="copyEmail" class="form-check-label">
-                        {{ i18n.translate('copy_email') }}
-                      </label>
-                    </div>
+                    <label for="contact_type">{{ i18n.translate('message') }} *</label>
+                    <textarea id="contact_type" name="contact_type" class="form-control" rows="6"
+                              [placeholder]="i18n.translate('message_placeholder')" required></textarea>
                   </div>
                   
                   <div class="form-actions">
-                    <button type="submit" class="btn btn-primary btn-lg" 
-                            [disabled]="contactForm.invalid || isSubmitting">
+                    <button type="submit" class="btn btn-primary btn-lg" [disabled]="isSubmitting">
                       <span *ngIf="isSubmitting">
                         <i class="fas fa-spinner fa-spin"></i> {{ i18n.translate('sending') }}
                       </span>
@@ -510,98 +390,55 @@ import emailjs from '@emailjs/browser';
   `]
 })
 export class ContactComponent {
-  contactForm: FormGroup;
   isSubmitting = false;
   showSuccessMessage = false;
   showErrorMessage = false;
-  minDate: string;
 
-  constructor(private formBuilder: FormBuilder, public i18n: I18nService) {
-    // Set minimum date to today
-    const today = new Date();
-    this.minDate = today.toISOString().split('T')[0];
-
-    this.contactForm = this.formBuilder.group({
-      contactType: ['', Validators.required],
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      phone: [''],
-      reservationDate: [''],
-      reservationTime: [''],
-      partySize: [''],
-      subject: [''],
-      message: ['', Validators.required],
-      copyEmail: [true]
-    });
+  constructor(public i18n: I18nService) {
+    // Initialize EmailJS
+    emailjs.init('SwYGWuRATmlLhXvCL');
   }
 
-  async onSubmit() {
-    if (this.contactForm.valid && !this.isSubmitting) {
-      this.isSubmitting = true;
-      this.showSuccessMessage = false;
-      this.showErrorMessage = false;
+  async onSubmit(event: Event) {
+    event.preventDefault();
+    
+    if (this.isSubmitting) return;
+    
+    this.isSubmitting = true;
+    this.showSuccessMessage = false;
+    this.showErrorMessage = false;
 
-      try {
-        const formData = this.contactForm.value;
-        
-        // Prepare email template parameters
-        const templateParams = {
-          contact_type: formData.contactType,
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          customer_email: formData.email,
-          phone: formData.phone || 'Not provided',
-          reservation_date: formData.reservationDate || 'Not specified',
-          reservation_time: formData.reservationTime || 'Not specified',
-          party_size: formData.partySize || 'Not specified',
-          subject: formData.subject || `${formData.contactType} inquiry`,
-          message: formData.message,
-          to_email: 'hssnmd.farhad+sd@gmail.com'
-        };
+    try {
+      console.log('Sending email using EmailJS...');
+      
+      // Use the exact pattern from your working sample
+      const result = await emailjs.sendForm(
+        'service_5aorl74',  // Service ID
+        'template_9lm9mzo', // Template ID  
+        event.target as HTMLFormElement
+      );
+      
+      console.log('Email sent successfully:', result);
+      this.showSuccessMessage = true;
+      
+      // Reset the form
+      (event.target as HTMLFormElement).reset();
+      
+      // Scroll to top to show success message
+      window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        // Initialize EmailJS (you'll need to set up your service ID, template ID, and public key)
-        emailjs.init('YOUR_PUBLIC_KEY'); // Replace with your EmailJS public key
-        
-        // Send email to restaurant
-        await emailjs.send(
-          'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
-          'YOUR_TEMPLATE_ID', // Replace with your EmailJS template ID
-          templateParams
-        );
-
-        // Send copy to customer if requested
-        if (formData.copyEmail) {
-          const customerParams = {
-            ...templateParams,
-            to_email: formData.email
-          };
-          
-          await emailjs.send(
-            'YOUR_SERVICE_ID', // Replace with your EmailJS service ID
-            'YOUR_CUSTOMER_TEMPLATE_ID', // Replace with your customer copy template ID
-            customerParams
-          );
-        }
-
-        this.showSuccessMessage = true;
-        this.contactForm.reset();
-        this.contactForm.patchValue({ copyEmail: true });
-
-        // Scroll to top to show success message
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-      } catch (error) {
-        console.error('Error sending email:', error);
-        this.showErrorMessage = true;
-      } finally {
-        this.isSubmitting = false;
+    } catch (error: any) {
+      console.error('Error sending email:', error);
+      this.showErrorMessage = true;
+      
+      // Log specific error details
+      if (error.status) {
+        console.error('EmailJS Status:', error.status);
+        console.error('EmailJS Text:', error.text);
       }
-    } else {
-      // Mark all fields as touched to show validation errors
-      Object.keys(this.contactForm.controls).forEach(key => {
-        this.contactForm.get(key)?.markAsTouched();
-      });
+      
+    } finally {
+      this.isSubmitting = false;
     }
   }
 }
