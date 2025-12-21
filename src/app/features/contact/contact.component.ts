@@ -85,11 +85,23 @@ import emailjs from '@emailjs/browser';
                   </div>
                   
                   <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                       <div class="form-group">
                         <label for="email">{{ i18n.translate('email_address') }} *</label>
                         <input type="email" id="email" name="email" class="form-control" 
                                [placeholder]="i18n.translate('email_placeholder')" required>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <label for="phone">{{ i18n.translate('phone_number') }}</label>
+                        <input type="tel" id="phone" name="phone" class="form-control" 
+                               [placeholder]="i18n.translate('phone_placeholder')"
+                               pattern="^[\+]?[1-9][\d]{0,15}$"
+                               title="Please enter a valid phone number (e.g., +358401234567 or 0401234567)">
+                        <div class="invalid-feedback phone-error" style="display: none;">
+                          Please enter a valid phone number
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -348,6 +360,16 @@ import emailjs from '@emailjs/browser';
       border-color: #ff6b6b;
     }
     
+    .form-control.is-invalid {
+      border-color: #ff6b6b;
+      box-shadow: 0 0 0 0.2rem rgba(255, 107, 107, 0.25);
+    }
+    
+    .form-control.is-valid {
+      border-color: #28a745;
+      box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    }
+    
     .alert {
       padding: 1rem 1.5rem;
       border-radius: var(--radius-medium);
@@ -399,10 +421,56 @@ export class ContactComponent {
     emailjs.init('SwYGWuRATmlLhXvCL');
   }
 
+  ngAfterViewInit() {
+    // Add phone number validation listener
+    const phoneInput = document.getElementById('phone') as HTMLInputElement;
+    if (phoneInput) {
+      phoneInput.addEventListener('input', this.validatePhoneNumber.bind(this));
+      phoneInput.addEventListener('blur', this.validatePhoneNumber.bind(this));
+    }
+  }
+
+  validatePhoneNumber(event: Event) {
+    const phoneInput = event.target as HTMLInputElement;
+    const phoneError = phoneInput.parentElement?.querySelector('.phone-error') as HTMLElement;
+    
+    if (phoneInput.value.trim() === '') {
+      // Empty is valid since field is optional
+      phoneInput.classList.remove('is-invalid');
+      if (phoneError) phoneError.style.display = 'none';
+      return;
+    }
+    
+    // Phone number pattern: optional +, followed by 1-9, then 0-15 digits
+    // Allows formats like: +358401234567, 0401234567, 358401234567
+    const phonePattern = /^[\+]?[1-9][\d]{0,15}$/;
+    const isValid = phonePattern.test(phoneInput.value.trim());
+    
+    if (isValid) {
+      phoneInput.classList.remove('is-invalid');
+      phoneInput.classList.add('is-valid');
+      if (phoneError) phoneError.style.display = 'none';
+    } else {
+      phoneInput.classList.remove('is-valid');
+      phoneInput.classList.add('is-invalid');
+      if (phoneError) phoneError.style.display = 'block';
+    }
+  }
+
   async onSubmit(event: Event) {
     event.preventDefault();
     
     if (this.isSubmitting) return;
+    
+    // Validate phone number if provided
+    const form = event.target as HTMLFormElement;
+    const phoneInput = form.querySelector('#phone') as HTMLInputElement;
+    
+    if (phoneInput && phoneInput.value.trim() && phoneInput.classList.contains('is-invalid')) {
+      // Don't submit if phone number is invalid
+      phoneInput.focus();
+      return;
+    }
     
     this.isSubmitting = true;
     this.showSuccessMessage = false;
@@ -411,18 +479,35 @@ export class ContactComponent {
     try {
       console.log('Sending email using EmailJS...');
       
+      const formData = new FormData(form);
+      
+      // Get the phone number and message
+      const phone = formData.get('phone') as string;
+      const originalMessage = formData.get('contact_type') as string;
+      
+      // If phone number is provided, concatenate it to the message
+      if (phone && phone.trim()) {
+        const messageWithPhone = `${originalMessage}\n\nPhone Number: ${phone.trim()}`;
+        
+        // Update the form data with the concatenated message
+        const messageField = form.querySelector('textarea[name="contact_type"]') as HTMLTextAreaElement;
+        if (messageField) {
+          messageField.value = messageWithPhone;
+        }
+      }
+      
       // Use the exact pattern from your working sample
       const result = await emailjs.sendForm(
         'service_5aorl74',  // Service ID
         'template_9lm9mzo', // Template ID  
-        event.target as HTMLFormElement
+        form
       );
       
       console.log('Email sent successfully:', result);
       this.showSuccessMessage = true;
       
       // Reset the form
-      (event.target as HTMLFormElement).reset();
+      form.reset();
       
       // Scroll to top to show success message
       window.scrollTo({ top: 0, behavior: 'smooth' });
