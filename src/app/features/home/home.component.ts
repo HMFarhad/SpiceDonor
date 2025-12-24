@@ -39,7 +39,20 @@ import { SiteSettings, Special } from '@core/models';
           <div class="hero-content">
             <div class="hero-text">
               <h1 class="hero-title">
-                {{ i18n.getLocalizedContent(settings.heroTitle) }}
+                <span class="hero-title-text">
+                  {{ i18n.getLocalizedContent(settings.heroTitle) }}
+                  <!-- Smoke particles -->
+                  <span class="smoke-particle smoke-1"></span>
+                  <span class="smoke-particle smoke-2"></span>
+                  <span class="smoke-particle smoke-3"></span>
+                  <span class="smoke-particle smoke-4"></span>
+                  <span class="smoke-particle smoke-5"></span>
+                  <span class="smoke-particle smoke-6"></span>
+                  <span class="smoke-particle smoke-7"></span>
+                  <span class="smoke-particle smoke-8"></span>
+                  <span class="smoke-particle smoke-9"></span>
+                  <span class="smoke-particle smoke-10"></span>
+                </span>
               </h1>
               <p class="hero-subtitle">
                 {{ i18n.getLocalizedContent(settings.heroSubtitle) }}
@@ -69,6 +82,9 @@ import { SiteSettings, Special } from '@core/models';
           <div class="section-header text-center">
             <h2>{{ i18n.translate('Why Choose Spice Döner?') }}</h2>
             <p class="text-muted">{{ i18n.translate('Fresh ingredients, authentic flavors, healthy options') }}</p>
+            <small class="logo-dietary-text">
+              L = Lactose Free | G = Gluten Free | K = Vegetarian | V = Vegan
+            </small>
           </div>
           
           <div class="grid grid-3">
