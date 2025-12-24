@@ -1,0 +1,1 @@
+import{b as m}from"./chunk-SWRIPJFE.js";import{B as r,Ha as i,ta as e,x as t}from"./chunk-2YBVV4QU.js";var c=(()=>{class o{static{this.\u0275fac=function(n){return new(n||o)}}static{this.\u0275mod=r({type:o})}static{this.\u0275inj=t({imports:[i,e.forChild([{path:"",component:m}])]})}}return o})();export{c as FaqModule};
