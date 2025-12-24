@@ -82,6 +82,20 @@
     height: 24px;
     object-fit: contain;
     flex-shrink: 0;
+    border-radius: 4px;
+  }
+
+  .platform-logo {
+    height: 32px;
+    max-width: 120px;
+    object-fit: contain;
+    flex-shrink: 0;
+    border-radius: 4px;
+    
+    @media (max-width: 480px) {
+      height: 28px;
+      max-width: 100px;
+    }
   }
 
   .platform-text {

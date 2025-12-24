@@ -234,13 +234,13 @@ export class HomeComponent implements OnInit, OnDestroy {
   
   backgroundImages: string[] = [
     'image1.jpg', // pita_meat category
-    'image5.jpg', // pita_veg category  
-    'image5.jpg', // mezze_bowls category
-    'image5.jpg', // doner_bowls category
-    'image5.jpg', // children category
+    'image1.jpg', // pita_veg category  
+    'image1.jpg', // mezze_bowls category
+    'image1.jpg', // doner_bowls category
+    'image1.jpg', // children category
     'image1.jpg', // sides category
     'image1.jpg', // beverages category
-    'image5.jpg'  // dips category
+    'image1.jpg'  // dips category
   ];
   
   currentImageIndex: number = 0;
