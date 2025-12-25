@@ -11,7 +11,7 @@ import { SiteSettings, Special } from '@core/models';
       <!-- Hero Section -->
       <section class="hero" 
                [class.slide-background]="true"
-               [style.background-image]="'url(/assets/images/' + currentBackgroundImage + ')'"
+               [style.background-image]="'url(' + currentBackgroundImage + ')'"
                *ngIf="settings$ | async as settings">
         
         <!-- Slider Controls -->
@@ -246,17 +246,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   settings$: Observable<SiteSettings | null>;
   specials$: Observable<Special[]>;
   activeSpecials$: Observable<Special[]>;
-  currentBackgroundImage: string = 'image1.jpg';
+  currentBackgroundImage: string = 'assets/images/image1.jpg';
   
   backgroundImages: string[] = [
-    'image1.jpg', // pita_meat category
-    'image1.jpg', // pita_veg category  
-    'image1.jpg', // mezze_bowls category
-    'image1.jpg', // doner_bowls category
-    'image1.jpg', // children category
-    'image1.jpg', // sides category
-    'image1.jpg', // beverages category
-    'image1.jpg'  // dips category
+    'assets/images/image1.jpg',
+    'assets/images/image2.jpg', 
+    'assets/images/image3.jpg',
+    'assets/images/image4.jpg',
+    'assets/images/image5.jpg',
+    'assets/images/image6.jpg',
+    'assets/images/hero-bg.jpg',
+    'assets/images/MainBG.jpg'
   ];
   
   currentImageIndex: number = 0;
