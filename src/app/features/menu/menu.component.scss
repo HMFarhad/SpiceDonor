@@ -62,6 +62,10 @@
   border: 1px solid rgba(255, 107, 53, 0.2);
   border-radius: var(--radius-large);
   
+  @media (min-width: 769px) {
+    margin-top: 50px;
+  }
+  
   &::after {
     content: '';
     position: absolute;

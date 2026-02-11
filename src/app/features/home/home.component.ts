@@ -83,7 +83,7 @@ import { SiteSettings, Special } from '@core/models';
             <h2>{{ i18n.translate('Why Choose Spice Döner?') }}</h2>
             <p class="text-muted">{{ i18n.translate('Fresh ingredients, authentic flavors, healthy options') }}</p>
             <small class="logo-dietary-text">
-              L = Lactose Free | G = Gluten Free | K = Vegetarian | V = Vegan
+              {{ i18n.translate('L = Lactose Free | G = Gluten Free | K = Vegetarian | V = Vegan') }}
             </small>
           </div>
           
@@ -92,7 +92,7 @@ import { SiteSettings, Special } from '@core/models';
               <div class="card-body text-center">
                 <div class="highlight-icon"></div>
                 <h3 class="highlight-title">{{ i18n.translate('Fresh Daily') }}</h3>
-                <p class="text-muted">All ingredients are sourced fresh and prepared daily in our kitchen.</p>
+                <p class="text-muted">{{ i18n.translate('All ingredients are sourced fresh and prepared daily in our kitchen.') }}</p>
               </div>
             </div>
 
@@ -100,7 +100,7 @@ import { SiteSettings, Special } from '@core/models';
               <div class="card-body text-center">
                 <div class="highlight-icon"></div>
                 <h3 class="highlight-title">{{ i18n.translate('Vegan') }}</h3>
-                <p class="text-muted">Delicious plant-based options perfect for vegan diets.</p>
+                <p class="text-muted">{{ i18n.translate('Delicious plant-based options perfect for vegan diets.') }}</p>
               </div>
             </div>
 
@@ -108,7 +108,7 @@ import { SiteSettings, Special } from '@core/models';
               <div class="card-body text-center">
                 <div class="highlight-icon"></div>
                 <h3 class="highlight-title">{{ i18n.translate('Vegetarian') }}</h3>
-                <p class="text-muted">Wide selection of vegetarian dishes for every taste.</p>
+                <p class="text-muted">{{ i18n.translate('Wide selection of vegetarian dishes for every taste.') }}</p>
               </div>
             </div>
 
@@ -116,7 +116,7 @@ import { SiteSettings, Special } from '@core/models';
               <div class="card-body text-center">
                 <div class="highlight-icon"></div>
                 <h3 class="highlight-title">{{ i18n.translate('Gluten Free') }}</h3>
-                <p class="text-muted">Many gluten-free options available for dietary restrictions.</p>
+                <p class="text-muted">{{ i18n.translate('Many gluten-free options available for dietary restrictions.') }}</p>
               </div>
             </div>
 
@@ -124,7 +124,7 @@ import { SiteSettings, Special } from '@core/models';
               <div class="card-body text-center">
                 <div class="highlight-icon"></div>
                 <h3 class="highlight-title">{{ i18n.translate('Lactose Free') }}</h3>
-                <p class="text-muted">Dairy-free alternatives for lactose intolerant guests.</p>
+                <p class="text-muted">{{ i18n.translate('Dairy-free alternatives for lactose intolerant guests.') }}</p>
               </div>
             </div>
 
@@ -132,7 +132,7 @@ import { SiteSettings, Special } from '@core/models';
               <div class="card-body text-center">
                 <div class="highlight-icon"></div>
                 <h3 class="highlight-title">{{ i18n.translate('Halal') }}</h3>
-                <p class="text-muted">All our meat is halal-certified following Islamic dietary laws.</p>
+                <p class="text-muted">{{ i18n.translate('All our meat is halal-certified following Islamic dietary laws.') }}</p>
               </div>
             </div>
           </div>

@@ -8,6 +8,7 @@
   width: 100%;
   overflow: hidden;
   box-shadow: var(--shadow-soft);
+  min-height: 200px;
   
   &::before {
     content: '';
@@ -21,15 +22,15 @@
   }
   
   @media (max-width: 768px) {
-    height: 140px;
+    min-height: 200px;
   }
   
   @media (max-width: 480px) {
-    height: 130px;
+    min-height: 200px;
   }
   
   @media (max-width: 360px) {
-    height: 120px;
+    min-height: 200px;
   }
 
   &-content {
@@ -92,25 +93,26 @@
   }
 
   &-image {
-    height: 144px;
+    height: 190px;
     width: auto;
     
     @media (max-width: 768px) {
-      height: 120px !important;
+      height: 190px !important;
     }
     
     @media (max-width: 480px) {
-      height: 110px !important;
+      height: 190px !important;
     }
     
     @media (max-width: 360px) {
-      height: 100px !important;
+      height: 190px !important;
     }
   }
 
   &-text {
     font-family: 'Playfair Display', serif;
     font-weight: 600;
+    font-size: 1.9rem;
     position: relative;
     display: inline-block;
     overflow: visible;
