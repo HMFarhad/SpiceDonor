@@ -3,22 +3,22 @@
 
 // CSS variables for theming
 :root {
-  --primary-color: #F26A3D;
-  --secondary-color: #F7C948;
-  --accent-color: #FF8A4C;
-  --brand-red: #761B27;
-  --background-color: #141516;
-  --surface-color: #232427;
-  --surface-raised: #2C2D31;
+  --primary-color: #C96F4C;
+  --secondary-color: #E0B86F;
+  --accent-color: #D79259;
+  --brand-red: #6D2A36;
+  --background-color: #151315;
+  --surface-color: #252025;
+  --surface-raised: #302A2F;
   --text-dark: #FFFFFF;
   --text-light: #E7E2DC;
   --text-muted: #B9B3AC;
-  --text-special: #FFB35C;
+  --text-special: #E6BD7A;
   --white: #FFFFFF;
   --black: #000000;
   --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.22);
   --shadow-medium: 0 18px 40px rgba(0, 0, 0, 0.34);
-  --shadow-glow: 0 12px 28px rgba(242, 106, 61, 0.28);
+  --shadow-glow: 0 12px 28px rgba(201, 111, 76, 0.22);
   --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
   --gradient-surface: linear-gradient(135deg, #2D2D2D 0%, #3A3A3A 100%);
   --image-background-orange: url('/assets/images/orange_background.jpg');
@@ -143,14 +143,14 @@ button {
   letter-spacing: 0.025em;
 
   &-primary {
-    background: var(--gradient-primary);
+    background: var(--primary-color);
     color: #2b1710;
     box-shadow: var(--shadow-glow);
 
     &:hover {
       transform: translateY(-2px);
       box-shadow: var(--shadow-glow), var(--shadow-medium);
-      background: linear-gradient(135deg, #FF8C42 0%, #FFD700 100%);
+      background: var(--secondary-color);
     }
   }
 

@@ -29,7 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Set initial SEO data
     this.seoService.updateSeoData({
-      title: 'Spice Döner - Authentic Bengali Cuisine',
+      title: 'Spice Döner - Modern Middle Eastern Cuisine',
       description: 'Fresh, vibrant Middle Eastern flavors. Hummus bowls, warm pitas, colorful salads crafted daily in Helsinki.',
       keywords: 'hummus, middle eastern food, helsinki restaurant, vegan, vegetarian, healthy food',
       type: 'website'

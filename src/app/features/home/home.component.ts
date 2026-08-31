@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable, interval, Subscription } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MenuDataService, SeoService, I18nService } from '@core/services';
-import { SiteSettings, Special } from '@core/models';
+import { MenuItem, SiteSettings, Special } from '@core/models';
 
 @Component({
   selector: 'app-home',
@@ -14,28 +14,6 @@ import { SiteSettings, Special } from '@core/models';
                [style.background-image]="'url(' + currentBackgroundImage + ')'"
                *ngIf="settings$ | async as settings">
         
-        <!-- Slider Controls -->
-        <div class="slider-controls">
-          <button class="slider-btn slider-prev" (click)="previousImage()" aria-label="Previous image">
-            <span class="slider-icon">‹</span>
-          </button>
-          <button class="slider-btn slider-next" (click)="nextImage()" aria-label="Next image">
-            <span class="slider-icon">›</span>
-          </button>
-        </div>
-
-        <!-- Slider Indicators -->
-        <div class="slider-indicators">
-          <button 
-            *ngFor="let image of backgroundImages; let i = index" 
-            class="slider-dot"
-            [class.active]="i === currentImageIndex"
-            (click)="goToSlide(i)"
-            [attr.aria-current]="i === currentImageIndex ? 'true' : null"
-            [attr.aria-label]="'Go to slide ' + (i + 1)">
-          </button>
-        </div>
-
         <div class="container">
           <div class="hero-content">
             <div class="hero-text">
@@ -61,6 +39,34 @@ import { SiteSettings, Special } from '@core/models';
                 </app-platform-buttons>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Signature dishes -->
+      <section class="section signature-section" *ngIf="featuredItems$ | async as featuredItems">
+        <div class="container">
+          <div class="section-header signature-header">
+            <p class="section-eyebrow">{{ i18n.translate('from_our_kitchen') }}</p>
+            <h2>{{ i18n.translate('made_for_first_bite') }}</h2>
+            <p class="text-muted">{{ i18n.translate('signature_intro') }}</p>
+            <a routerLink="/menu" class="text-link">{{ i18n.translate('explore_full_menu') }} <span aria-hidden="true">↗</span></a>
+          </div>
+
+          <div class="signature-grid">
+            <article class="signature-card" *ngFor="let item of featuredItems; let i = index">
+              <div class="signature-image" *ngIf="item.imageUrl">
+                <img [src]="item.imageUrl" [alt]="i18n.getLocalizedContent(item.name)" loading="lazy">
+                <span class="signature-number">0{{ i + 1 }}</span>
+              </div>
+              <div class="signature-body">
+                <div class="signature-title-row">
+                  <h3>{{ i18n.getLocalizedContent(item.name) }}</h3>
+                  <span class="signature-price">{{ i18n.formatPrice(item.discountPrice || item.price, item.currency) }}</span>
+                </div>
+                <p>{{ i18n.getLocalizedContent(item.description) }}</p>
+              </div>
+            </article>
           </div>
         </div>
       </section>
@@ -231,25 +237,12 @@ import { SiteSettings, Special } from '@core/models';
   `,
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class HomeComponent implements OnInit {
   settings$: Observable<SiteSettings | null>;
   specials$: Observable<Special[]>;
   activeSpecials$: Observable<Special[]>;
+  featuredItems$: Observable<MenuItem[]>;
   currentBackgroundImage: string = 'assets/images/image1.jpg';
-  
-  backgroundImages: string[] = [
-    'assets/images/image1.jpg',
-    'assets/images/image2.jpg', 
-    'assets/images/image3.jpg',
-    'assets/images/image4.jpg',
-    'assets/images/image5.jpg',
-    'assets/images/image6.jpg',
-    'assets/images/hero-bg.jpg',
-    'assets/images/MainBG.jpg'
-  ];
-  
-  currentImageIndex: number = 0;
-  private slideSubscription?: Subscription;
 
   constructor(
     private menuDataService: MenuDataService,
@@ -266,6 +259,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     
     this.activeSpecials$ = this.menuDataService.menuData$.pipe(
       map(data => data?.specials?.filter((special: Special) => special.active) || [])
+    );
+
+    this.featuredItems$ = this.menuDataService.menuData$.pipe(
+      map(data => data?.items?.filter((item: MenuItem) => item.available).slice(0, 3) || [])
     );
   }
 
@@ -285,46 +282,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Start background image slideshow
-    this.startBackgroundSlideshow();
-  }
-
-  ngOnDestroy(): void {
-    if (this.slideSubscription) {
-      this.slideSubscription.unsubscribe();
-    }
-  }
-
-  private startBackgroundSlideshow(): void {
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return;
-    }
-
-    // Change background every 4 seconds
-    this.slideSubscription = interval(4000).subscribe(() => {
-      this.nextBackgroundImage();
-    });
-  }
-
-  private nextBackgroundImage(): void {
-    this.currentImageIndex = (this.currentImageIndex + 1) % this.backgroundImages.length;
-    this.currentBackgroundImage = this.backgroundImages[this.currentImageIndex];
-  }
-
-  nextImage(): void {
-    this.nextBackgroundImage();
-  }
-
-  previousImage(): void {
-    this.currentImageIndex = this.currentImageIndex === 0 
-      ? this.backgroundImages.length - 1 
-      : this.currentImageIndex - 1;
-    this.currentBackgroundImage = this.backgroundImages[this.currentImageIndex];
-  }
-
-  goToSlide(index: number): void {
-    this.currentImageIndex = index;
-    this.currentBackgroundImage = this.backgroundImages[this.currentImageIndex];
   }
 
   trackBySpecialId(index: number, special: Special): string {
