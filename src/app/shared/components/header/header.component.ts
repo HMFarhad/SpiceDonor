@@ -11,30 +11,30 @@ import { MenuDataService, I18nService } from '@core/services';
         <div class="header-content">
           <div class="logo">
             <a routerLink="/" class="logo-link">
-              <img src="assets/images/logo.jpg" alt="Spice Döner" class="logo-image">
+              <img src="assets/images/logo.jpg" alt="" class="logo-image">
               <span class="logo-text">Spice Döner</span>
             </a>
           </div>
 
-          <nav class="nav" [class.nav-open]="isMenuOpen" role="navigation" aria-label="Main navigation">
+          <nav id="main-navigation" class="nav" [class.nav-open]="isMenuOpen" role="navigation" aria-label="Main navigation">
             <ul class="nav-list">
               <li class="nav-item">
-                <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">
+                <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link" (click)="closeMenu()">
                   {{ i18n.translate('home') }}
                 </a>
               </li>
               <li class="nav-item">
-                <a routerLink="/menu" routerLinkActive="active" class="nav-link">
+                <a routerLink="/menu" routerLinkActive="active" class="nav-link" (click)="closeMenu()">
                   {{ i18n.translate('menu') }}
                 </a>
               </li>
               <li class="nav-item">
-                <a routerLink="/about" routerLinkActive="active" class="nav-link">
+                <a routerLink="/about" routerLinkActive="active" class="nav-link" (click)="closeMenu()">
                   {{ i18n.translate('about') }}
                 </a>
               </li>
               <li class="nav-item">
-                <a routerLink="/contact" routerLinkActive="active" class="nav-link">
+                <a routerLink="/contact" routerLinkActive="active" class="nav-link" (click)="closeMenu()">
                   {{ i18n.translate('contact') }}
                 </a>
               </li>
@@ -47,6 +47,7 @@ import { MenuDataService, I18nService } from '@core/services';
             
             <button 
               class="mobile-menu-toggle hide-desktop"
+              aria-controls="main-navigation"
               [attr.aria-expanded]="isMenuOpen"
               [attr.aria-label]="isMenuOpen ? 'Close menu' : 'Open menu'"
               (click)="toggleMenu()">
@@ -78,5 +79,9 @@ export class HeaderComponent implements OnInit {
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
+  }
+
+  closeMenu(): void {
+    this.isMenuOpen = false;
   }
 }

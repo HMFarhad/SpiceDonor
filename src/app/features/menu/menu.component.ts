@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ViewportScroller } from '@angular/common';
 import { MenuDataService, SeoService, I18nService } from '@core/services';
-import { Category, MenuItem, MenuFilters } from '@core/models';
+import { Category, MenuItem } from '@core/models';
 
 @Component({
   selector: 'app-menu',
@@ -13,13 +13,13 @@ import { Category, MenuItem, MenuFilters } from '@core/models';
       <section class="section">
         <div class="container">
           <!-- Loading State -->
-          <div *ngIf="loading$ | async" class="loading">
+          <div *ngIf="loading$ | async" class="loading" role="status" aria-live="polite">
             <div class="loading-spinner"></div>
             <p>{{ i18n.translate('loading') }}...</p>
           </div>
 
           <!-- Error State -->
-          <div *ngIf="error$ | async as error" class="error-container">
+          <div *ngIf="error$ | async as error" class="error-container" role="alert">
             <div class="error-icon">⚠️</div>
             <h3 class="error-title">{{ i18n.translate('error_loading_menu') }}</h3>
             <p class="error-message">{{ error }}</p>
@@ -28,6 +28,11 @@ import { Category, MenuItem, MenuFilters } from '@core/models';
 
           <!-- Menu Content -->
           <div *ngIf="menuData$ | async as menuData">
+            <header class="menu-intro">
+              <p class="menu-eyebrow">Spice Döner · Malmi</p>
+              <h1>{{ i18n.translate('menu') }}</h1>
+              <p>{{ i18n.translate('Fresh ingredients, authentic flavors, healthy options') }}</p>
+            </header>
             
             <!-- Dietary Legend -->
             <div class="dietary-legend card mb-4">
@@ -48,9 +53,17 @@ import { Category, MenuItem, MenuFilters } from '@core/models';
                 *ngFor="let category of visibleCategories$ | async" 
                 (click)="setActiveCategory(category.id)"
                 [class.active]="activeCategory === category.id"
+                [attr.aria-pressed]="activeCategory === category.id"
                 class="category-btn">
                 {{ i18n.getLocalizedContent(category.name) }}
               </button>
+            </div>
+
+            <div *ngIf="menuData.items.length === 0" class="empty-menu card" role="status">
+              <div class="card-body">
+                <h2>{{ i18n.translate('menu') }}</h2>
+                <p>{{ i18n.translate('unavailable') }}</p>
+              </div>
             </div>
 
             <!-- Menu Items -->

@@ -13,14 +13,6 @@ import { I18nService, SeoService, AnalyticsService } from '@core/services';
       </main>
       <app-footer></app-footer>
       <app-cookie-banner></app-cookie-banner>
-      
-      <!-- Floating Menu Button for Mobile -->
-      <a 
-        routerLink="/menu" 
-        class="floating-menu-btn btn btn-primary"
-        [attr.aria-label]="i18nService.translate('view_menu')">
-        {{ i18nService.translate('view_menu') }}
-      </a>
     </div>
   `,
   styleUrls: ['./app.component.scss']

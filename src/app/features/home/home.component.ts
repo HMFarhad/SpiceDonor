@@ -31,6 +31,7 @@ import { SiteSettings, Special } from '@core/models';
             class="slider-dot"
             [class.active]="i === currentImageIndex"
             (click)="goToSlide(i)"
+            [attr.aria-current]="i === currentImageIndex ? 'true' : null"
             [attr.aria-label]="'Go to slide ' + (i + 1)">
           </button>
         </div>
@@ -38,21 +39,9 @@ import { SiteSettings, Special } from '@core/models';
         <div class="container">
           <div class="hero-content">
             <div class="hero-text">
+              <p class="hero-kicker">Malminkaari 9 · Helsinki</p>
               <h1 class="hero-title">
-                <span class="hero-title-text">
-                  {{ i18n.getLocalizedContent(settings.heroTitle) }}
-                  <!-- Smoke particles -->
-                  <span class="smoke-particle smoke-1"></span>
-                  <span class="smoke-particle smoke-2"></span>
-                  <span class="smoke-particle smoke-3"></span>
-                  <span class="smoke-particle smoke-4"></span>
-                  <span class="smoke-particle smoke-5"></span>
-                  <span class="smoke-particle smoke-6"></span>
-                  <span class="smoke-particle smoke-7"></span>
-                  <span class="smoke-particle smoke-8"></span>
-                  <span class="smoke-particle smoke-9"></span>
-                  <span class="smoke-particle smoke-10"></span>
-                </span>
+                {{ i18n.getLocalizedContent(settings.heroTitle) }}
               </h1>
               <p class="hero-subtitle">
                 {{ i18n.getLocalizedContent(settings.heroSubtitle) }}
@@ -307,6 +296,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private startBackgroundSlideshow(): void {
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
+
     // Change background every 4 seconds
     this.slideSubscription = interval(4000).subscribe(() => {
       this.nextBackgroundImage();
