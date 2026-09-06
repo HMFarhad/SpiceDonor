@@ -13,7 +13,7 @@ import { Category, MenuItem } from '@core/models';
       <section class="section">
         <div class="container">
           <!-- Loading State -->
-          <div *ngIf="loading$ | async" class="loading" role="status" aria-live="polite">
+          <div *ngIf="(loading$ | async) && !(menuData$ | async)" class="loading" role="status" aria-live="polite">
             <div class="loading-spinner"></div>
             <p>{{ i18n.translate('loading') }}...</p>
           </div>
@@ -41,9 +41,11 @@ import { Category, MenuItem } from '@core/models';
                 <div class="legend-items">
                   <span class="legend-item"><strong>L</strong> = {{ i18n.translate('lactose_free') }}</span>
                   <span class="legend-item"><strong>G</strong> = {{ i18n.translate('gluten_free') }}</span>
+                  <span class="legend-item"><strong>M</strong> = {{ i18n.translate('dairy_free') }}</span>
                   <span class="legend-item"><strong>K</strong> = {{ i18n.translate('vegetarian') }}</span>
                   <span class="legend-item"><strong>V</strong> = {{ i18n.translate('vegan') }}</span>
                 </div>
+                <p class="legend-note">{{ i18n.translate('(G) = Available gluten-free on request. Pitas, mezze plates and bowls can be made gluten-free, except wraps.') }}</p>
               </div>
             </div>
             
@@ -102,8 +104,14 @@ import { Category, MenuItem } from '@core/models';
                         </div>
                         <div class="menu-item-price">
                           <span class="price-current">
+                            <span *ngIf="item.priceLabel">{{ i18n.getLocalizedContent(item.priceLabel) }}: </span>
                             {{ i18n.formatPrice(item.discountPrice || item.price, item.currency) }}
                             <span *ngIf="item.priceLarge" class="price-large">/ {{ i18n.formatPrice(item.priceLarge, item.currency) }}</span>
+                          </span>
+                          <span *ngIf="item.priceAlt" class="price-current price-alternate">
+                            <span *ngIf="item.priceAltLabel">{{ i18n.getLocalizedContent(item.priceAltLabel) }}: </span>
+                            {{ i18n.formatPrice(item.priceAlt, item.currency) }}
+                            <span *ngIf="item.priceAltLarge" class="price-large">/ {{ i18n.formatPrice(item.priceAltLarge, item.currency) }}</span>
                           </span>
                           <span 
                             *ngIf="item.discountPrice" 
@@ -194,29 +202,7 @@ export class MenuComponent implements OnInit {
   }
 
   getCategoryItemNumber(categoryId: string, itemIndex: number): number {
-    // Find the starting number for this category based on previous categories
-    const allCategories = ['pita_meat', 'pita_veg', 'mezze_bowls', 'doner_bowls', 'children', 'sides', 'beverages', 'dips'];
-    let totalItems = 0;
-    
-    for (const catId of allCategories) {
-      if (catId === categoryId) {
-        break;
-      }
-      // Count items in this category (this would be better if we had the actual data)
-      const categoryItems: Record<string, number> = {
-        'pita_meat': 4,
-        'pita_veg': 7,
-        'mezze_bowls': 6,
-        'doner_bowls': 6,
-        'children': 2,
-        'sides': 12,
-        'beverages': 10,
-        'dips': 7
-      };
-      totalItems += categoryItems[catId] || 0;
-    }
-    
-    return totalItems + itemIndex + 1;
+    return itemIndex + 1;
   }
 
   retryLoad(): void {

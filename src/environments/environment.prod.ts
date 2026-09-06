@@ -5,6 +5,7 @@ export const environment: Environment = {
   dataSource: {
     type: 'fileUrl', // Configure for production
     fileUrl: {
+      workbookUrl: 'assets/data/menu.xlsx',
       categories: 'assets/data/categories.csv',
       items: 'assets/data/items.csv',
       optionGroups: 'assets/data/option-groups.csv',

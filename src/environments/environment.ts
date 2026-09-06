@@ -5,6 +5,7 @@ export const environment: Environment = {
   dataSource: {
     type: DataSourceType.FILE_URL, // Change to DataSourceType.GOOGLE_SHEET if using Google Sheets API
     fileUrl: {
+      workbookUrl: 'assets/data/menu.xlsx',
       categories: 'assets/data/categories.csv',
       items: 'assets/data/items.csv',
       optionGroups: 'assets/data/option-groups.csv',

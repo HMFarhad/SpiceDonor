@@ -13,7 +13,9 @@ export enum DietaryTag {
   G = 'G',
   K = 'K',
   V = 'V',
-  VL = 'VL'
+  VL = 'VL',
+  M = 'M',
+  GLUTEN_FREE_ON_REQUEST = '(G)'
 }
 
 export enum AllergenTag {
@@ -67,6 +69,10 @@ export interface MenuItem {
   description: LocalizedContent;
   price: number;
   priceLarge?: number;
+  priceAlt?: number;
+  priceAltLarge?: number;
+  priceLabel?: LocalizedContent;
+  priceAltLabel?: LocalizedContent;
   discountPrice?: number;
   currency: string;
   dietaryTags: DietaryTag[];
@@ -159,6 +165,7 @@ export interface DataSourceConfig {
     };
   };
   fileUrl?: {
+    workbookUrl?: string;
     categories: string;
     items: string;
     optionGroups: string;

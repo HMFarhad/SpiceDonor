@@ -186,7 +186,9 @@
     white-space: nowrap;
 
     .price-current { color: var(--secondary-color); font-size: 1.08rem; font-weight: 800; }
-    .price-large { color: var(--text-light); font-size: 0.88rem; font-weight: 500; }
+.price-large { color: var(--text-light); font-size: 0.88rem; font-weight: 500; }
+.price-alternate { display: block; margin-top: 0.2rem; font-size: 0.96rem; }
+.legend-note { margin: 0.75rem 0 0; color: var(--text-muted); font-size: 0.9rem; }
     .price-original { color: var(--text-muted); font-size: 0.78rem; text-decoration: line-through; }
   }
 

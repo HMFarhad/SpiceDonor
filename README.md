@@ -60,9 +60,31 @@ npm run lint            # Code linting
 
 ## 📊 Data Management
 
-### Using CSV Files (Default Setup)
+### Using one Excel workbook (default setup)
 
-The application comes pre-configured to load menu data from CSV files in `src/assets/data/`. This is the simplest way to get started.
+The site reads `outputs/menu/menu.xlsx`. The Angular build copies this one workbook to
+`assets/data/menu.xlsx`; each worksheet is loaded by name at runtime:
+
+- `items`
+- `categories`
+- `option_groups`
+- `options`
+- `specials`
+- `hours`
+- `site_settings`
+
+Edit rows directly in Excel. Adding or removing an item, changing its category, renaming it,
+or changing a price does not require an application rebuild. Replace the workbook at the same
+deployed URL and the site refreshes it automatically within five minutes. For a cloud-hosted
+workbook, set `workbookUrl` once to a stable public HTTPS download URL; the host must allow CORS.
+
+The `available` and `visible` columns control whether items and categories appear. Do not rename
+worksheet tabs or header columns. Keep IDs unique and use a `category_id` listed on the
+`categories` sheet.
+
+### Using CSV Files (legacy fallback)
+
+CSV files in `src/assets/data/` remain supported if `workbookUrl` is removed from the environment configuration.
 
 **To update menu data:**
 1. Edit the CSV files in `src/assets/data/`

@@ -1,8 +1,8 @@
 import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
-import { Observable, BehaviorSubject, of, throwError } from 'rxjs';
-import { catchError, map, tap, shareReplay } from 'rxjs/operators';
+import { Observable, BehaviorSubject, throwError, timer } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import * as Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 import { 
@@ -43,6 +43,11 @@ export class MenuDataService {
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.loadMenuData();
+    if (isPlatformBrowser(this.platformId)) {
+      timer(this.CACHE_DURATION, this.CACHE_DURATION).subscribe(() => {
+        this.loadMenuData(true).catch(error => console.error('Background menu refresh failed:', error));
+      });
+    }
   }
 
   public async loadMenuData(forceRefresh: boolean = false): Promise<MenuData> {
@@ -61,7 +66,7 @@ export class MenuDataService {
           this.menuDataSubject.next(cachedData);
           this.loadingSubject.next(false);
           // Load fresh data in background
-          this.loadFreshData();
+          this.loadFreshData().catch(error => console.error('Background menu refresh failed:', error));
           return cachedData;
         }
       }
@@ -111,6 +116,11 @@ export class MenuDataService {
 
   private async loadFromFileUrls(config: DataSourceConfig): Promise<MenuData> {
     const { fileUrl } = config;
+
+    if (fileUrl?.workbookUrl) {
+      const dataMap = await this.fetchWorkbookData(fileUrl.workbookUrl);
+      return this.parseMenuData(dataMap);
+    }
     
     const promises = Object.entries(fileUrl!).map(([key, url]) => 
       this.fetchFileData(url).then(data => ({ key, data }))
@@ -123,6 +133,18 @@ export class MenuDataService {
     }, {} as any);
 
     return this.parseMenuData(dataMap);
+  }
+
+  private fetchWorkbookData(url: string): Promise<Record<string, any[]>> {
+    const separator = url.includes('?') ? '&' : '?';
+    const cacheBustedUrl = `${url}${separator}menu_refresh=${Date.now()}`;
+    return this.http.get(cacheBustedUrl, {
+      responseType: 'arraybuffer',
+      headers: new HttpHeaders({ 'Cache-Control': 'no-cache' })
+    }).pipe(
+      map(buffer => this.parseWorkbook(buffer)),
+      catchError(error => throwError(() => new Error(`Failed to fetch menu workbook: ${error.message}`)))
+    ).toPromise().then(result => result || {});
   }
 
   private fetchGoogleSheetData(spreadsheetId: string, range: string, apiKey?: string): Promise<any[]> {
@@ -172,6 +194,31 @@ export class MenuDataService {
     const firstSheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[firstSheetName];
     return XLSX.utils.sheet_to_json(worksheet);
+  }
+
+  private parseWorkbook(buffer: ArrayBuffer): Record<string, any[]> {
+    const workbook = XLSX.read(buffer, { type: 'array', cellDates: true });
+    const sheetAliases: Record<string, string[]> = {
+      categories: ['categories'],
+      items: ['items'],
+      optionGroups: ['option_groups', 'optiongroups'],
+      options: ['options'],
+      specials: ['specials'],
+      hours: ['hours'],
+      settings: ['site_settings', 'settings']
+    };
+
+    const normalizedNames = new Map(
+      workbook.SheetNames.map(name => [name.toLowerCase().replace(/[\s-]+/g, '_'), name])
+    );
+
+    return Object.entries(sheetAliases).reduce((dataMap, [key, aliases]) => {
+      const sheetName = aliases.map(alias => normalizedNames.get(alias)).find(Boolean);
+      dataMap[key] = sheetName
+        ? XLSX.utils.sheet_to_json(workbook.Sheets[sheetName!], { defval: '' })
+        : [];
+      return dataMap;
+    }, {} as Record<string, any[]>);
   }
 
   private convertGoogleSheetsResponse(response: any): any[] {
@@ -232,6 +279,16 @@ export class MenuDataService {
       },
       price: parseFloat(row.price) || 0,
       priceLarge: row.price_large ? parseFloat(row.price_large) : undefined,
+      priceAlt: row.price_alt ? parseFloat(row.price_alt) : undefined,
+      priceAltLarge: row.price_alt_large ? parseFloat(row.price_alt_large) : undefined,
+      priceLabel: row.price_label_en || row.price_label_fi ? {
+        en: row.price_label_en || '',
+        fi: row.price_label_fi || ''
+      } : undefined,
+      priceAltLabel: row.price_alt_label_en || row.price_alt_label_fi ? {
+        en: row.price_alt_label_en || '',
+        fi: row.price_alt_label_fi || ''
+      } : undefined,
       discountPrice: row.discount_price ? parseFloat(row.discount_price) : undefined,
       currency: row.currency || 'EUR',
       dietaryTags: this.parseDietaryTags(row.dietary_tags),
