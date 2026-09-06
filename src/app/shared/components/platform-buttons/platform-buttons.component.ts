@@ -19,12 +19,12 @@ type ButtonVariant = 'full' | 'compact' | 'icons';
       </button>
 
       <button 
-        *ngIf="orderLinks?.foodora || fallbackLinks?.foodora"
-        (click)="onOrderClick('foodora', orderLinks?.foodora || fallbackLinks?.foodora!)"
-        class="platform-btn foodora-btn"
-        [attr.aria-label]="'Order on Foodora'">
-        <img src="assets/images/foodora_logo.jpg" alt="Foodora" 
-             [class]="variant === 'icons' ? 'platform-icon foodora-icon' : 'platform-logo foodora-logo'">
+        *ngIf="orderLinks?.uberEats || fallbackLinks?.uberEats"
+        (click)="onOrderClick('uber-eats', orderLinks?.uberEats || fallbackLinks?.uberEats!)"
+        class="platform-btn uber-eats-btn"
+        [attr.aria-label]="'Order on Uber Eats'">
+        <img src="assets/images/uber_eats_logo.svg" alt="Uber Eats" 
+             [class]="variant === 'icons' ? 'platform-icon uber-eats-icon' : 'platform-logo uber-eats-logo'">
         <span *ngIf="variant === 'full'" class="platform-text">Order Now</span>
       </button>
     </div>

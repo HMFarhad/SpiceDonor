@@ -31,7 +31,7 @@ export const environment: Environment = {
   },
   externalOrder: {
     wolt: 'https://wolt.com/fi/restaurant/bengal-ruokopaikka',
-    foodora: 'https://www.foodora.fi/restaurant/bengal-ruokopaikka'
+    uberEats: 'https://www.ubereats.com/fi'
   },
   defaultLocale: 'en',
   supportedLocales: ['en', 'fi'],

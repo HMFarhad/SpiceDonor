@@ -34,7 +34,7 @@ import { MenuItem, SiteSettings, Special } from '@core/models';
                   [variant]="'compact'"
                   [fallbackLinks]="{
                     wolt: settings.externalOrderWoltUrl,
-                    foodora: settings.externalOrderFoodoraUrl
+                    uberEats: settings.externalOrderUberEatsUrl
                   }">
                 </app-platform-buttons>
               </div>
@@ -174,7 +174,7 @@ import { MenuItem, SiteSettings, Special } from '@core/models';
                 [variant]="'full'"
                 [fallbackLinks]="{
                   wolt: settings.externalOrderWoltUrl,
-                  foodora: settings.externalOrderFoodoraUrl
+                  uberEats: settings.externalOrderUberEatsUrl
                 }">
               </app-platform-buttons>
             </div>

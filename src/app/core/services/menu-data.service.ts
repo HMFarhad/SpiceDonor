@@ -370,7 +370,7 @@ export class MenuDataService {
       },
       ctaPrimaryLink: row.cta_primary_link || '/menu',
       externalOrderWoltUrl: row.external_order_wolt_url || environment.externalOrder.wolt || '',
-      externalOrderFoodoraUrl: row.external_order_foodora_url || environment.externalOrder.foodora || '',
+      externalOrderUberEatsUrl: row.external_order_uber_eats_url || environment.externalOrder.uberEats || '',
       phone: row.phone || '',
       email: row.email || '',
       addressLine1: row.address_line1 || '',

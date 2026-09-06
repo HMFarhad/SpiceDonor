@@ -118,7 +118,7 @@ export class FooterComponent {
     this.orderLinks$ = this.settings$.pipe(
       map(settings => settings ? {
         wolt: settings.externalOrderWoltUrl,
-        foodora: settings.externalOrderFoodoraUrl
+        uberEats: settings.externalOrderUberEatsUrl
       } : null)
     );
   }

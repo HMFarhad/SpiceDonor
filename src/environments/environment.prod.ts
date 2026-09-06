@@ -17,8 +17,7 @@ export const environment: Environment = {
   },
   externalOrder: {
     wolt: 'https://wolt.com/fi/your-restaurant',
-    bolt: 'https://food.bolt.eu/your-restaurant',
-    foodora: 'https://www.foodora.fi/your-restaurant'
+    uberEats: 'https://www.ubereats.com/fi'
   },
   defaultLocale: 'en',
   supportedLocales: ['en', 'fi'],

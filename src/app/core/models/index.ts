@@ -59,7 +59,7 @@ export interface Category {
 
 export interface OrderLinks {
   wolt?: string;
-  foodora?: string;
+  uberEats?: string;
 }
 
 export interface MenuItem {
@@ -122,7 +122,7 @@ export interface SiteSettings {
   ctaPrimaryText: LocalizedContent;
   ctaPrimaryLink: string;
   externalOrderWoltUrl: string;
-  externalOrderFoodoraUrl: string;
+  externalOrderUberEatsUrl: string;
   phone: string;
   email: string;
   addressLine1: string;

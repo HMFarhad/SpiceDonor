@@ -2,6 +2,13 @@ import fs from 'node:fs/promises';
 import { SpreadsheetFile, Workbook } from '@oai/artifact-tool';
 
 const outputPath = new URL('../outputs/menu/menu.xlsx', import.meta.url).pathname;
+const itemImageDir = new URL('../src/assets/images/item-photos/', import.meta.url);
+const itemImageUrls = await fs.readdir(itemImageDir)
+  .then(files => files
+    .filter(file => /\.(jpe?g|png|webp|avif)$/i.test(file))
+    .sort((a, b) => a.localeCompare(b))
+    .map(file => `assets/images/item-photos/${file}`))
+  .catch(() => []);
 
 const categories = [
   ['pita_meat', 'Pitas & Wraps - Chicken & Beef', 'Pitat & wrapit - Kana & naudanliha', 'Available as pita or wrap. Prices: pita / wrap.', 'Saatavilla pitana tai wrappina. Hinnat: pita / wrappi.', 1, true],
@@ -84,8 +91,11 @@ add('house_tomato_sauce', 'dips', 'House Tomato Sauce', 'Talon tomaattikastike',
 add('naga_chili_sauce', 'dips', 'Naga Chili Sauce', 'Naga-chilikastike', '', '', 1.5, '', '');
 
 // Use the restaurant's preferred Finnish name wherever the menu says "fresh salad mix".
-items.forEach(row => {
+items.forEach((row, index) => {
   row[5] = row[5].replaceAll('tuoretta salaattisekoitusta', 'tuoretta jäävuorisalaattisekoitusta');
+  if (!row[19] && itemImageUrls.length) {
+    row[19] = itemImageUrls[index % itemImageUrls.length];
+  }
 });
 
 const optionGroups = [
@@ -108,7 +118,7 @@ const hours = [
 const settings = [[
   'Spice Döner', 'Spice Döner', 'Premium kebab, hummus & falafel.', 'Premium kebab, hummus & falafel.',
   'View Menu', 'Katso menu', '/menu', 'https://wolt.com/fi/restaurant/spice-donor',
-  'https://www.foodora.fi/restaurant/spice-donor', '+358 9 1234 5678', 'info@spicedonor.fi',
+  'https://www.ubereats.com/fi', '+358 9 1234 5678', 'info@spicedonor.fi',
   'Malminkaari 9', '', 'Helsinki', '00700',
   'https://maps.google.com/maps?q=Malminkaari+9,+00700+Helsinki&output=embed',
   'https://instagram.com/spicedonor', 'https://facebook.com/spicedonor', 'https://tiktok.com/@spicedonor',
@@ -133,7 +143,7 @@ const specs = [
   ['options', ['id','group_id','name_en','name_fi','price_delta'], options],
   ['specials', ['id','title_en','title_fi','description_en','description_fi','price','discount_price','active','start_date','end_date'], specials],
   ['hours', ['day','open','close','closed'], hours],
-  ['site_settings', ['hero_title_en','hero_title_fi','hero_subtitle_en','hero_subtitle_fi','cta_primary_text_en','cta_primary_text_fi','cta_primary_link','external_order_wolt_url','external_order_foodora_url','phone','email','address_line1','address_line2','city','postal_code','map_embed_url','instagram_url','facebook_url','tiktok_url','currency','brand_primary_color','brand_secondary_color'], settings],
+  ['site_settings', ['hero_title_en','hero_title_fi','hero_subtitle_en','hero_subtitle_fi','cta_primary_text_en','cta_primary_text_fi','cta_primary_link','external_order_wolt_url','external_order_uber_eats_url','phone','email','address_line1','address_line2','city','postal_code','map_embed_url','instagram_url','facebook_url','tiktok_url','currency','brand_primary_color','brand_secondary_color'], settings],
 ];
 
 const workbook = Workbook.create();
