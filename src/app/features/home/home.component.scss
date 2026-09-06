@@ -121,7 +121,8 @@
 
 .signature-image {
   position: relative;
-  height: 230px;
+  aspect-ratio: 16 / 11;
+  height: auto;
   overflow: hidden;
   background: var(--surface-raised);
 
@@ -234,7 +235,7 @@
 @media (max-width: 900px) {
   .signature-grid { grid-template-columns: 1fr; }
   .signature-card { display: grid; grid-template-columns: 0.8fr 1fr; }
-  .signature-image { height: 100%; min-height: 180px; }
+  .signature-image { height: 100%; min-height: 210px; aspect-ratio: auto; }
 }
 
 @media (max-width: 768px) {
@@ -253,7 +254,7 @@
 
   .signature-header { margin-bottom: 2rem; }
   .signature-card { display: block; }
-  .signature-image { height: 210px; }
+  .signature-image { aspect-ratio: 16 / 11; height: auto; }
   .location-section .location-grid { grid-template-columns: 1fr; }
   .location-section .map-container { min-height: 280px; }
 }

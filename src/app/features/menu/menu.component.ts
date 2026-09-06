@@ -84,7 +84,8 @@ import { Category, MenuItem } from '@core/models';
                 <div class="grid grid-2">
                   <div 
                     *ngFor="let item of getItemsForCategory(menuData.items, category.id); let i = index"
-                    class="menu-item card">
+                    class="menu-item card"
+                    [class.has-image]="item.imageUrl">
                     <div class="menu-item-image" *ngIf="item.imageUrl">
                       <img 
                         [src]="item.imageUrl" 
