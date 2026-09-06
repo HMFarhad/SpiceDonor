@@ -1,0 +1,1 @@
+import{d as n}from"./chunk-2UZ2VMZH.js";import{A as r,Ga as i,sa as e,w as t}from"./chunk-2P34OV7S.js";var a=(()=>{class o{static{this.\u0275fac=function(m){return new(m||o)}}static{this.\u0275mod=r({type:o})}static{this.\u0275inj=t({imports:[i,e.forChild([{path:"",component:n}])]})}}return o})();export{a as NotFoundModule};
