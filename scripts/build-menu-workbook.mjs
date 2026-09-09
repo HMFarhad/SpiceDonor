@@ -2,19 +2,63 @@ import fs from 'node:fs/promises';
 import { SpreadsheetFile, Workbook } from '@oai/artifact-tool';
 
 const outputPath = new URL('../outputs/menu/menu.xlsx', import.meta.url).pathname;
-const itemImageDir = new URL('../src/assets/images/item-photos/', import.meta.url);
-const itemImageUrls = await fs.readdir(itemImageDir)
+const itemImageDir = new URL('../src/assets/images/Items/', import.meta.url);
+const normalizeProductName = value => value
+  .normalize('NFKC')
+  .trim()
+  .toLocaleLowerCase('fi')
+  .replace(/[‐‑‒–—―−]/g, '-')
+  .replace(/\s*-\s*/g, '-')
+  .replace(/\s+/g, ' ');
+
+const itemImagesByName = await fs.readdir(itemImageDir)
   .then(files => files
     .filter(file => /\.(jpe?g|png|webp|avif)$/i.test(file))
     .sort((a, b) => a.localeCompare(b))
-    .map(file => `assets/images/item-photos/${file}`))
-  .catch(() => []);
+    .reduce((images, file) => {
+      const productName = normalizeProductName(file.replace(/\.[^.]+$/, ''));
+      if (images.has(productName)) {
+        throw new Error(`Duplicate product image name: ${file}`);
+      }
+      images.set(productName, file);
+      return images;
+    }, new Map()))
+  .catch(error => {
+    if (error?.code === 'ENOENT') return new Map();
+    throw error;
+  });
+
+const multiImageSelections = new Map([
+  ['chicken_doner', ['Kana Döner', 'Kana Wrap']],
+  ['mixed_doner', ['Kana Döner', 'Nauta Döner']],
+  ['vegetarian_feta_eggplant', ['Munakoiso-Kukkakaali Pita', 'Munakoiso - Brokkoli Pita']],
+  ['eggplant_cauliflower_broccoli', ['Munakoiso-Kukkakaali Pita', 'Munakoiso - Brokkoli Pita']],
+  ['mixed_mezze', ['Kana Döner Mezze Bowl', 'Nauta Döner Mezze Bowl']],
+  ['doner_fries_bowl', ['Kana Döner Ranskalaiset Bowl', 'Döner Ranskalaiset Bowl Naudalla']],
+  ['doner_rice_bowl', ['Döner Riisi Bowl Kanalla', 'Döner Riisi Bowl Naudalla']],
+  ['doner_iskander_bowl', ['Döner Iskander Bowl Kanalla', 'Döner Iskander Bowl Naudalla']],
+  ['kids_doner_fries', ['Kana Döner Ranskalaiset Bowl', 'Döner Ranskalaiset Bowl Naudalla']],
+  ['cauliflower_broccoli_hummus', ['Kukkakaali & Hummus', 'Brokkoli & Hummus']]
+]);
+
+const imageUrlOverrides = new Map([
+  ['fish_chips', ['assets/images/Fish n Chips.png']]
+]);
+
+const getProductImages = productName => {
+  const baseImage = itemImagesByName.get(normalizeProductName(productName));
+  const mealName = /\s+pita$/i.test(productName)
+    ? productName.replace(/\s+pita$/i, ' Ateria')
+    : `${productName} Ateria`;
+  const mealImage = itemImagesByName.get(normalizeProductName(mealName));
+  return [baseImage, mealImage].filter(Boolean);
+};
 
 const categories = [
-  ['pita_meat', 'Pitas & Wraps - Chicken & Beef', 'Pitat & wrapit - Kana & naudanliha', 'Available as pita or wrap. Prices: pita / wrap.', 'Saatavilla pitana tai wrappina. Hinnat: pita / wrappi.', 1, true],
-  ['pita_veg', 'Pitas & Wraps - Vegetarian & Vegan', 'Pitat & wrapit - Kasvis & vegaani', 'Available as pita or wrap. Prices: pita / wrap.', 'Saatavilla pitana tai wrappina. Hinnat: pita / wrappi.', 2, true],
-  ['mezze_bowls', 'Mezze Bowls', 'Mezze bowlit', 'Served with fresh pide bread. Prices: regular / giant.', 'Kaikkiin annoksiin kuuluu tuoretta pide-leipää. Hinnat: normaali / jätti.', 3, true],
-  ['doner_bowls', 'Döner Bowls', 'Döner bowlit', 'Prices: regular / giant.', 'Hinnat: normaali / jätti.', 4, true],
+  ['pita_meat', 'Pitas & Wraps - Chicken & Beef', 'Pitat & wrapit - Kana & naudanliha', 'Available as pita or wrap. Add a meal with fries and Coke for €3.', 'Saatavilla pitana tai wrappina. Lisää ateria ranskalaisilla ja Coca-Colalla +3 €.', 1, true],
+  ['pita_veg', 'Pitas & Wraps - Vegetarian & Vegan', 'Pitat & wrapit - Kasvis & vegaani', 'Available as pita or wrap. Add a meal with fries and Coke for €3.', 'Saatavilla pitana tai wrappina. Lisää ateria ranskalaisilla ja Coca-Colalla +3 €.', 2, true],
+  ['mezze_bowls', 'Mezze Bowls', 'Mezze bowlit', 'Served with fresh pide bread. Add a meal with fries and Coke for €3.', 'Kaikkiin annoksiin kuuluu tuoretta pide-leipää. Lisää ateria ranskalaisilla ja Coca-Colalla +3 €.', 3, true],
+  ['doner_bowls', 'Döner Bowls', 'Döner bowlit', 'Add a meal with fries and Coke for €3.', 'Lisää ateria ranskalaisilla ja Coca-Colalla +3 €.', 4, true],
   ['children', "Children's Menu", 'Lasten menu', '', '', 5, true],
   ['sides', 'Sides & Snacks', 'Lisukkeet & snacks', '', '', 6, true],
   ['beverages', 'Drinks', 'Juomat', '', '', 7, true],
@@ -91,20 +135,33 @@ add('house_tomato_sauce', 'dips', 'House Tomato Sauce', 'Talon tomaattikastike',
 add('naga_chili_sauce', 'dips', 'Naga Chili Sauce', 'Naga-chilikastike', '', '', 1.5, '', '');
 
 // Use the restaurant's preferred Finnish name wherever the menu says "fresh salad mix".
-items.forEach((row, index) => {
+items.forEach(row => {
   row[5] = row[5].replaceAll('tuoretta salaattisekoitusta', 'tuoretta jäävuorisalaattisekoitusta');
-  if (!row[19] && itemImageUrls.length) {
-    row[19] = itemImageUrls[index % itemImageUrls.length];
-  }
+  const overriddenUrls = imageUrlOverrides.get(row[0]);
+  const selectedNames = multiImageSelections.get(row[0]);
+  const imageFiles = selectedNames
+    ? selectedNames.flatMap(name => {
+        const images = getProductImages(name);
+        if (!images.length) throw new Error(`Missing configured product image: ${name}`);
+        return images;
+      })
+    : getProductImages(row[3]).length
+      ? getProductImages(row[3])
+      : getProductImages(row[2]);
+  row[19] = overriddenUrls
+    ? overriddenUrls.join('|')
+    : [...new Set(imageFiles)]
+      .map(file => `assets/images/Items/${file}`)
+      .join('|');
 });
 
 const optionGroups = [
-  ['size_option', 'Size', 'Koko', 'single', 1, 1],
+  ['size_option', 'Order type', 'Tilaustapa', 'single', 1, 1],
   ['protein_option', 'Protein', 'Proteiini', 'single', 1, 1],
 ];
 const options = [
   ['regular', 'size_option', 'Regular', 'Normaali', 0],
-  ['giant', 'size_option', 'Giant', 'Jätti', 3],
+  ['meal', 'size_option', 'Meal (fries and Coke)', 'Ateria (ranskalaiset ja Coca-Cola)', 3],
   ['chicken', 'protein_option', 'Chicken döner', 'Kana-döner', 0],
   ['beef', 'protein_option', 'Beef döner', 'Nauta-döner', 1],
 ];
@@ -130,7 +187,7 @@ const readme = [
   ['Update cycle', 'Save or replace the workbook at the same deployed URL. Open site sessions refresh within five minutes; a page reload also checks for changes.'],
   ['Items', 'Add, edit or remove rows on the items sheet. Keep id values unique and choose a category_id from the categories sheet.'],
   ['Visibility', 'Set available to TRUE/FALSE for items and visible to TRUE/FALSE for categories.'],
-  ['Prices', 'Use numeric values in price fields. price_large is the second size. price_alt and price_alt_large support a second protein price line.'],
+  ['Prices', 'Use numeric values in price fields. price_large is the meal price (regular price + €3, including fries and Coke). price_alt and price_alt_large support a second protein price line.'],
   ['Structure', 'Do not rename worksheet tabs or column headers. Empty optional sheets are allowed.'],
   ['Source', 'Menu content transcribed from SPICE DÖNER Menu.pdf (updated menu supplied by the restaurant).'],
 ];
@@ -191,6 +248,7 @@ const categoriesSheet = workbook.worksheets.getItem('categories');
 categoriesSheet.getRange('G2:G100').dataValidation = { rule: { type: 'list', values: ['TRUE', 'FALSE'] } };
 
 await fs.mkdir(new URL('../outputs/menu/', import.meta.url), { recursive: true });
+workbook.recalculate();
 const output = await SpreadsheetFile.exportXlsx(workbook);
 await output.save(outputPath);
 

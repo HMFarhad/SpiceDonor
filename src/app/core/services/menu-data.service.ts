@@ -266,38 +266,46 @@ export class MenuDataService {
   }
 
   private parseItems(data: any[]): MenuItem[] {
-    return data.map(row => ({
-      id: row.id,
-      categoryId: row.category_id,
-      name: {
-        en: row.name_en || row.name,
-        fi: row.name_fi || row.name
-      },
-      description: {
-        en: row.description_en || '',
-        fi: row.description_fi || ''
-      },
-      price: parseFloat(row.price) || 0,
-      priceLarge: row.price_large ? parseFloat(row.price_large) : undefined,
-      priceAlt: row.price_alt ? parseFloat(row.price_alt) : undefined,
-      priceAltLarge: row.price_alt_large ? parseFloat(row.price_alt_large) : undefined,
-      priceLabel: row.price_label_en || row.price_label_fi ? {
-        en: row.price_label_en || '',
-        fi: row.price_label_fi || ''
-      } : undefined,
-      priceAltLabel: row.price_alt_label_en || row.price_alt_label_fi ? {
-        en: row.price_alt_label_en || '',
-        fi: row.price_alt_label_fi || ''
-      } : undefined,
-      discountPrice: row.discount_price ? parseFloat(row.discount_price) : undefined,
-      currency: row.currency || 'EUR',
-      dietaryTags: this.parseDietaryTags(row.dietary_tags),
-      allergens: this.parseAllergens(row.allergens),
-      available: row.available === 'TRUE' || row.available === true,
-      imageUrl: row.image_url || undefined,
-      orderLinks: this.parseOrderLinks(row.order_links),
-      optionsGroupIds: this.parseTags(row.options_group_ids)
-    }));
+    return data.map(row => {
+      const imageUrls = String(row.image_url || '')
+        .split('|')
+        .map((url: string) => url.trim())
+        .filter(Boolean);
+
+      return {
+        id: row.id,
+        categoryId: row.category_id,
+        name: {
+          en: row.name_en || row.name,
+          fi: row.name_fi || row.name
+        },
+        description: {
+          en: row.description_en || '',
+          fi: row.description_fi || ''
+        },
+        price: parseFloat(row.price) || 0,
+        priceLarge: row.price_large ? parseFloat(row.price_large) : undefined,
+        priceAlt: row.price_alt ? parseFloat(row.price_alt) : undefined,
+        priceAltLarge: row.price_alt_large ? parseFloat(row.price_alt_large) : undefined,
+        priceLabel: row.price_label_en || row.price_label_fi ? {
+          en: row.price_label_en || '',
+          fi: row.price_label_fi || ''
+        } : undefined,
+        priceAltLabel: row.price_alt_label_en || row.price_alt_label_fi ? {
+          en: row.price_alt_label_en || '',
+          fi: row.price_alt_label_fi || ''
+        } : undefined,
+        discountPrice: row.discount_price ? parseFloat(row.discount_price) : undefined,
+        currency: row.currency || 'EUR',
+        dietaryTags: this.parseDietaryTags(row.dietary_tags),
+        allergens: this.parseAllergens(row.allergens),
+        available: row.available === 'TRUE' || row.available === true,
+        imageUrl: imageUrls[0] || undefined,
+        imageUrls,
+        orderLinks: this.parseOrderLinks(row.order_links),
+        optionsGroupIds: this.parseTags(row.options_group_ids)
+      };
+    });
   }
 
   private parseOptionGroups(data: any[]): OptionGroup[] {

@@ -85,12 +85,23 @@ import { Category, MenuItem } from '@core/models';
                   <div 
                     *ngFor="let item of getItemsForCategory(menuData.items, category.id); let i = index"
                     class="menu-item card"
-                    [class.has-image]="item.imageUrl">
-                    <div class="menu-item-image" *ngIf="item.imageUrl">
+                    [class.has-image]="item.imageUrls.length">
+                    <div
+                      class="menu-item-image"
+                      *ngIf="item.imageUrls.length as imageCount"
+                      [class.has-multiple]="imageCount > 1"
+                      [class.image-count-2]="imageCount === 2"
+                      [class.image-count-3]="imageCount === 3"
+                      [class.image-count-4]="imageCount === 4">
                       <img 
-                        [src]="item.imageUrl" 
-                        [alt]="i18n.getLocalizedContent(item.name)"
+                        *ngFor="let imageUrl of item.imageUrls; let imageIndex = index"
+                        [src]="imageUrl"
+                        [alt]="imageIndex === 0 ? i18n.getLocalizedContent(item.name) : ''"
+                        [attr.aria-hidden]="imageIndex > 0 ? 'true' : null"
                         loading="lazy">
+                      <div *ngIf="imageCount > 1" class="image-rotation-dots" aria-hidden="true">
+                        <span *ngFor="let imageUrl of item.imageUrls"></span>
+                      </div>
                     </div>
                     <div class="card-body">
                       <div class="menu-item-header">
@@ -107,12 +118,12 @@ import { Category, MenuItem } from '@core/models';
                           <span class="price-current">
                             <span *ngIf="item.priceLabel">{{ i18n.getLocalizedContent(item.priceLabel) }}: </span>
                             {{ i18n.formatPrice(item.discountPrice || item.price, item.currency) }}
-                            <span *ngIf="item.priceLarge" class="price-large">/ {{ i18n.formatPrice(item.priceLarge, item.currency) }}</span>
+                            <span *ngIf="item.priceLarge" class="price-large">/ {{ i18n.translate('meal') }} {{ i18n.formatPrice(item.priceLarge, item.currency) }}</span>
                           </span>
                           <span *ngIf="item.priceAlt" class="price-current price-alternate">
                             <span *ngIf="item.priceAltLabel">{{ i18n.getLocalizedContent(item.priceAltLabel) }}: </span>
                             {{ i18n.formatPrice(item.priceAlt, item.currency) }}
-                            <span *ngIf="item.priceAltLarge" class="price-large">/ {{ i18n.formatPrice(item.priceAltLarge, item.currency) }}</span>
+                            <span *ngIf="item.priceAltLarge" class="price-large">/ {{ i18n.translate('meal') }} {{ i18n.formatPrice(item.priceAltLarge, item.currency) }}</span>
                           </span>
                           <span 
                             *ngIf="item.discountPrice" 

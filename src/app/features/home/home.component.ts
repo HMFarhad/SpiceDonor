@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { MenuDataService, SeoService, I18nService } from '@core/services';
 import { MenuItem, SiteSettings, Special } from '@core/models';
@@ -9,10 +10,15 @@ import { MenuItem, SiteSettings, Special } from '@core/models';
   template: `
     <div class="home-page">
       <!-- Hero Section -->
-      <section class="hero" 
-               [class.slide-background]="true"
-               [style.background-image]="'url(' + currentBackgroundImage + ')'"
-               *ngIf="settings$ | async as settings">
+      <section class="hero" *ngIf="settings$ | async as settings">
+        <div class="hero-slides" aria-hidden="true">
+          <img
+            *ngFor="let imageUrl of heroLayerImages; let layerIndex = index"
+            [src]="imageUrl"
+            [class.active]="layerIndex === activeHeroLayer"
+            (load)="onHeroImageLoad(layerIndex)"
+            alt="">
+        </div>
         
         <div class="container">
           <div class="hero-content">
@@ -237,16 +243,27 @@ import { MenuItem, SiteSettings, Special } from '@core/models';
   `,
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
+  private readonly heroSlideDuration = 2500;
+  private readonly heroCrossfadeDuration = 800;
+  private heroImages: string[] = [];
+  private heroSlideTimer?: ReturnType<typeof setInterval>;
+  private heroPreloadTimer?: ReturnType<typeof setTimeout>;
+  private heroDataSubscription?: Subscription;
+  private currentHeroImageIndex = 0;
+  private heroLayerLoaded = [false, false];
+
   settings$: Observable<SiteSettings | null>;
   specials$: Observable<Special[]>;
   activeSpecials$: Observable<Special[]>;
   featuredItems$: Observable<MenuItem[]>;
-  currentBackgroundImage: string = 'assets/images/image1.jpg';
+  heroLayerImages: string[] = ['assets/images/image1.jpg', 'assets/images/image1.jpg'];
+  activeHeroLayer = 0;
 
   constructor(
     private menuDataService: MenuDataService,
     private seoService: SeoService,
+    @Inject(PLATFORM_ID) private platformId: Object,
     public i18n: I18nService
   ) {
     this.settings$ = this.menuDataService.menuData$.pipe(
@@ -267,6 +284,17 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.heroDataSubscription = this.menuDataService.menuData$.subscribe(data => {
+      if (!data) return;
+
+      const imageUrls = Array.from(new Set(
+        data.items
+          .filter((item: MenuItem) => item.available)
+          .flatMap((item: MenuItem) => item.imageUrls)
+      ));
+      this.configureHeroSlider(imageUrls);
+    });
+
     // Update SEO for home page
     this.settings$.subscribe(settings => {
       if (settings) {
@@ -282,6 +310,66 @@ export class HomeComponent implements OnInit {
       }
     });
 
+  }
+
+  ngOnDestroy(): void {
+    this.heroDataSubscription?.unsubscribe();
+    this.stopHeroSlider();
+  }
+
+  onHeroImageLoad(layerIndex: number): void {
+    this.heroLayerLoaded[layerIndex] = true;
+  }
+
+  private configureHeroSlider(imageUrls: string[]): void {
+    this.stopHeroSlider();
+    this.heroImages = imageUrls.length ? imageUrls : ['assets/images/image1.jpg'];
+    this.currentHeroImageIndex = 0;
+    this.activeHeroLayer = 0;
+    this.heroLayerLoaded = [false, false];
+    this.heroLayerImages = [
+      this.heroImages[0],
+      this.heroImages[1] || this.heroImages[0]
+    ];
+
+    if (
+      !isPlatformBrowser(this.platformId)
+      || this.heroImages.length < 2
+      || window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      return;
+    }
+
+    this.heroSlideTimer = setInterval(() => this.advanceHeroImage(), this.heroSlideDuration);
+  }
+
+  private advanceHeroImage(): void {
+    const nextLayer = this.activeHeroLayer === 0 ? 1 : 0;
+    if (!this.heroLayerLoaded[nextLayer]) return;
+
+    this.currentHeroImageIndex = (this.currentHeroImageIndex + 1) % this.heroImages.length;
+    this.activeHeroLayer = nextLayer;
+
+    if (this.heroPreloadTimer) clearTimeout(this.heroPreloadTimer);
+    this.heroPreloadTimer = setTimeout(() => {
+      const preloadLayer = this.activeHeroLayer === 0 ? 1 : 0;
+      const preloadIndex = (this.currentHeroImageIndex + 1) % this.heroImages.length;
+      const nextImageUrl = this.heroImages[preloadIndex];
+
+      if (this.heroLayerImages[preloadLayer] !== nextImageUrl) {
+        const updatedLayers = [...this.heroLayerImages];
+        updatedLayers[preloadLayer] = nextImageUrl;
+        this.heroLayerLoaded[preloadLayer] = false;
+        this.heroLayerImages = updatedLayers;
+      }
+    }, this.heroCrossfadeDuration);
+  }
+
+  private stopHeroSlider(): void {
+    if (this.heroSlideTimer) clearInterval(this.heroSlideTimer);
+    if (this.heroPreloadTimer) clearTimeout(this.heroPreloadTimer);
+    this.heroSlideTimer = undefined;
+    this.heroPreloadTimer = undefined;
   }
 
   trackBySpecialId(index: number, special: Special): string {

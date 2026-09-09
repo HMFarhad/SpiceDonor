@@ -32,8 +32,7 @@
               {
                 "glob": "**/*",
                 "input": "src/assets",
-                "output": "assets",
-                "ignore": ["images/Items/**"]
+                "output": "assets"
               },
               {
                 "glob": "menu.xlsx",
@@ -110,8 +109,7 @@
               {
                 "glob": "**/*",
                 "input": "src/assets",
-                "output": "assets",
-                "ignore": ["images/Items/**"]
+                "output": "assets"
               },
               {
                 "glob": "menu.xlsx",

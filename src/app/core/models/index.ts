@@ -79,6 +79,7 @@ export interface MenuItem {
   allergens: AllergenTag[];
   available: boolean;
   imageUrl?: string;
+  imageUrls: string[];
   orderLinks?: OrderLinks;
   optionsGroupIds: string[];
 }
