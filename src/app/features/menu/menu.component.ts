@@ -29,7 +29,7 @@ import { Category, MenuItem } from '@core/models';
           <!-- Menu Content -->
           <div *ngIf="menuData$ | async as menuData">
             <header class="menu-intro">
-              <p class="menu-eyebrow">Spice Döner · Malmi</p>
+              <p class="menu-eyebrow"><app-brand-wordmark></app-brand-wordmark> · Malmi</p>
               <h1>{{ i18n.translate('menu') }}</h1>
               <p>{{ i18n.translate('Fresh ingredients, authentic flavors, healthy options') }}</p>
             </header>

@@ -12,7 +12,7 @@ import { MenuDataService, I18nService } from '@core/services';
           <div class="logo">
             <a routerLink="/" class="logo-link">
               <img src="assets/images/logo.jpg" alt="" class="logo-image">
-              <span class="logo-text">Spice Döner</span>
+              <app-brand-wordmark class="logo-text"></app-brand-wordmark>
             </a>
           </div>
 

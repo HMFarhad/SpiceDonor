@@ -12,8 +12,8 @@ import { map } from 'rxjs/operators';
         <div class="footer-content">
           <div class="footer-section">
             <div class="footer-logo">
-              <img src="assets/images/logo.jpg" alt="Spice Döner" class="footer-logo-image">
-              <span class="footer-logo-text">Spice Döner</span>
+              <img src="assets/images/logo.jpg" alt="" class="footer-logo-image">
+              <app-brand-wordmark class="footer-logo-text"></app-brand-wordmark>
             </div>
             <p class="footer-description" *ngIf="settings$ | async as settings">
               {{ i18n.getLocalizedContent(settings.heroSubtitle) }}

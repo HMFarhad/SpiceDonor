@@ -9,13 +9,15 @@ import { FooterComponent } from './components/footer/footer.component';
 import { PlatformButtonsComponent } from './components/platform-buttons/platform-buttons.component';
 import { LanguageSwitcherComponent } from './components/language-switcher/language-switcher.component';
 import { CookieBannerComponent } from './components/cookie-banner/cookie-banner.component';
+import { BrandWordmarkComponent } from './components/brand-wordmark/brand-wordmark.component';
 
 const components = [
   HeaderComponent,
   FooterComponent,
   PlatformButtonsComponent,
   LanguageSwitcherComponent,
-  CookieBannerComponent
+  CookieBannerComponent,
+  BrandWordmarkComponent
 ];
 
 @NgModule({

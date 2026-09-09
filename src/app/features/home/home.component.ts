@@ -25,7 +25,10 @@ import { MenuItem, SiteSettings, Special } from '@core/models';
             <div class="hero-text">
               <p class="hero-kicker">Malminkaari 9 · Helsinki</p>
               <h1 class="hero-title">
-                {{ i18n.getLocalizedContent(settings.heroTitle) }}
+                <app-brand-wordmark
+                  *ngIf="i18n.getLocalizedContent(settings.heroTitle) === 'Spice Döner'; else customHeroTitle">
+                </app-brand-wordmark>
+                <ng-template #customHeroTitle>{{ i18n.getLocalizedContent(settings.heroTitle) }}</ng-template>
               </h1>
               <p class="hero-subtitle">
                 {{ i18n.getLocalizedContent(settings.heroSubtitle) }}

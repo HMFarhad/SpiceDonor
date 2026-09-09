@@ -1,0 +1,30 @@
+:host {
+  display: inline;
+  color: inherit;
+  font: inherit;
+}
+
+.brand-wordmark {
+  display: inline-flex;
+  align-items: center;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  white-space: nowrap;
+}
+
+.brand-copy {
+  display: inline-block;
+  flex: 0 0 auto;
+}
+
+.brand-i {
+  display: inline-block;
+  flex: 0 0 0.3em;
+  width: 0.3em;
+  height: 0.92em;
+  margin: 0 0.02em;
+  object-fit: fill;
+  object-position: center;
+  transform: translateY(0.04em) rotate(-4deg);
+}
