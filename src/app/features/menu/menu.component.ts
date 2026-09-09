@@ -44,8 +44,10 @@ import { Category, MenuItem } from '@core/models';
                   <span class="legend-item"><strong>M</strong> = {{ i18n.translate('dairy_free') }}</span>
                   <span class="legend-item"><strong>K</strong> = {{ i18n.translate('vegetarian') }}</span>
                   <span class="legend-item"><strong>V</strong> = {{ i18n.translate('vegan') }}</span>
+                  <span class="legend-item"><strong>H</strong> = {{ i18n.translate('halal') }}</span>
                 </div>
                 <p class="legend-note">{{ i18n.translate('(G) = Available gluten-free on request. Pitas, mezze plates and bowls can be made gluten-free, except wraps.') }}</p>
+                <p class="legend-note">{{ i18n.translate('allergy_care_note') }}</p>
               </div>
             </div>
             

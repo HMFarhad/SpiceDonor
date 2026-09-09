@@ -55,8 +55,8 @@ const getProductImages = productName => {
 };
 
 const categories = [
-  ['pita_meat', 'Pitas & Wraps - Chicken & Beef', 'Pitat & wrapit - Kana & naudanliha', 'Available as pita or wrap. Add a meal with fries and Coke for €3.', 'Saatavilla pitana tai wrappina. Lisää ateria ranskalaisilla ja Coca-Colalla +3 €.', 1, true],
-  ['pita_veg', 'Pitas & Wraps - Vegetarian & Vegan', 'Pitat & wrapit - Kasvis & vegaani', 'Available as pita or wrap. Add a meal with fries and Coke for €3.', 'Saatavilla pitana tai wrappina. Lisää ateria ranskalaisilla ja Coca-Colalla +3 €.', 2, true],
+  ['pita_meat', 'Pitas & Wraps - Chicken & Beef', 'Pitat & wrapit - Kana & naudanliha', 'Every item in this section can be served as either a pita or a wrap. Add a meal with fries and Coke for €3.', 'Jokainen tämän osion annos voidaan tarjoilla joko pitana tai wrappina. Lisää ateria ranskalaisilla ja Coca-Colalla +3 €.', 1, true],
+  ['pita_veg', 'Pitas & Wraps - Vegetarian & Vegan', 'Pitat & wrapit - Kasvis & vegaani', 'Every item in this section can be served as either a pita or a wrap. Add a meal with fries and Coke for €3.', 'Jokainen tämän osion annos voidaan tarjoilla joko pitana tai wrappina. Lisää ateria ranskalaisilla ja Coca-Colalla +3 €.', 2, true],
   ['mezze_bowls', 'Mezze Bowls', 'Mezze bowlit', 'Served with fresh pide bread. Add a meal with fries and Coke for €3.', 'Kaikkiin annoksiin kuuluu tuoretta pide-leipää. Lisää ateria ranskalaisilla ja Coca-Colalla +3 €.', 3, true],
   ['doner_bowls', 'Döner Bowls', 'Döner bowlit', 'Add a meal with fries and Coke for €3.', 'Lisää ateria ranskalaisilla ja Coca-Colalla +3 €.', 4, true],
   ['children', "Children's Menu", 'Lasten menu', '', '', 5, true],
@@ -134,9 +134,19 @@ add('hummus', 'dips', 'Hummus', 'Hummus', '', '', 1.5, '', '');
 add('house_tomato_sauce', 'dips', 'House Tomato Sauce', 'Talon tomaattikastike', '', '', 1.5, '', '');
 add('naga_chili_sauce', 'dips', 'Naga Chili Sauce', 'Naga-chilikastike', '', '', 1.5, '', '');
 
+const halalItemIds = new Set([
+  'chicken_doner', 'halloumi_chicken_doner', 'beef_doner', 'halloumi_beef_doner', 'mixed_doner',
+  'be_the_chef_pita', 'chicken_mezze', 'beef_mezze', 'mixed_mezze',
+  'doner_fries_bowl', 'doner_rice_bowl', 'doner_iskander_bowl', 'house_special_bowl',
+  'be_the_chef_bowl', 'kids_doner_fries', 'chicken_nuggets'
+]);
+
 // Use the restaurant's preferred Finnish name wherever the menu says "fresh salad mix".
 items.forEach(row => {
   row[5] = row[5].replaceAll('tuoretta salaattisekoitusta', 'tuoretta jäävuorisalaattisekoitusta');
+  if (halalItemIds.has(row[0])) {
+    row[16] = [...new Set([...String(row[16]).split(',').filter(Boolean), 'H'])].join(',');
+  }
   const overriddenUrls = imageUrlOverrides.get(row[0]);
   const selectedNames = multiImageSelections.get(row[0]);
   const imageFiles = selectedNames

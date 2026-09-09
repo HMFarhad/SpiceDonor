@@ -87,7 +87,7 @@ import { MenuItem, SiteSettings, Special } from '@core/models';
             <h2>{{ i18n.translate('Why Choose Spice Döner?') }}</h2>
             <p class="text-muted">{{ i18n.translate('Fresh ingredients, authentic flavors, healthy options') }}</p>
             <small class="logo-dietary-text">
-              {{ i18n.translate('L = Lactose Free | G = Gluten Free | K = Vegetarian | V = Vegan') }}
+              {{ i18n.translate('L = Lactose Free | G = Gluten Free | K = Vegetarian | V = Vegan | H = Halal') }}
             </small>
           </div>
           

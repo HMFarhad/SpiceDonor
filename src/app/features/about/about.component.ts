@@ -17,6 +17,9 @@ import { I18nService } from '@core/services';
             
             <h3>{{ i18n.translate('about_inclusivity_title') }}</h3>
             <p>{{ i18n.translate('about_inclusivity_text') }}</p>
+
+            <h3>{{ i18n.translate('about_allergy_title') }}</h3>
+            <p>{{ i18n.translate('about_allergy_text') }}</p>
             
             <h3>{{ i18n.translate('about_freshness_title') }}</h3>
             <p>{{ i18n.translate('about_freshness_text') }}</p>
@@ -29,6 +32,11 @@ import { I18nService } from '@core/services';
             
             <div class="promise-statement">
               <p><strong>{{ i18n.translate('about_closing') }}</strong></p>
+            </div>
+
+            <div class="franchise-card">
+              <h2>{{ i18n.translate('about_franchise_title') }}</h2>
+              <p>{{ i18n.translate('about_franchise_text') }}</p>
             </div>
           </div>
         </div>
@@ -106,6 +114,19 @@ import { I18nService } from '@core/services';
       margin: 0;
       position: relative;
       z-index: 2;
+    }
+    .franchise-card {
+      margin: 2rem 0;
+      padding: 1.75rem 2rem;
+      border: 1px solid rgba(247, 201, 72, 0.28);
+      border-radius: var(--radius-large);
+      background: rgba(247, 201, 72, 0.06);
+    }
+    .franchise-card h2 {
+      margin-top: 0;
+    }
+    .franchise-card p {
+      margin-bottom: 0;
     }
   `]
 })

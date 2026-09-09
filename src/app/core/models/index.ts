@@ -13,6 +13,7 @@ export enum DietaryTag {
   G = 'G',
   K = 'K',
   V = 'V',
+  H = 'H',
   VL = 'VL',
   M = 'M',
   GLUTEN_FREE_ON_REQUEST = '(G)'
