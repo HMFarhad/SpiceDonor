@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { FoodPhotoComponent } from './components/food-photo/food-photo.component';
+import { OrderPanelComponent } from './components/order-panel/order-panel.component';
+import { VisitInfoComponent } from './components/visit-info/visit-info.component';
 // Components
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
@@ -12,6 +15,9 @@ import { CookieBannerComponent } from './components/cookie-banner/cookie-banner.
 import { BrandWordmarkComponent } from './components/brand-wordmark/brand-wordmark.component';
 
 const components = [
+  FoodPhotoComponent,
+  VisitInfoComponent,
+  OrderPanelComponent,
   HeaderComponent,
   FooterComponent,
   PlatformButtonsComponent,

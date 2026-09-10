@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { I18nService } from '@core/services';
+import { isValidPhoneNumber } from './phone-validation';
 import emailjs from '@emailjs/browser';
 
 @Component({
@@ -12,41 +13,7 @@ import emailjs from '@emailjs/browser';
             <div class="col-md-4">
               <div class="contact-info-card">
                 <h2>{{ i18n.translate('visit_us') }}</h2>
-                <div class="info-item">
-                  <i class="fas fa-map-marker-alt"></i>
-                  <div>
-                    <strong>{{ i18n.translate('address') }}</strong>
-                    <p>Malminkaari 9<br>00700 Helsinki, Finland</p>
-                  </div>
-                </div>
-                
-                <div class="info-item">
-                  <i class="fas fa-phone"></i>
-                  <div>
-                    <strong>{{ i18n.translate('phone') }}</strong>
-                    <p><a href="tel:+35891234567">+358 9 1234 5678</a></p>
-                  </div>
-                </div>
-                
-                <div class="info-item">
-                  <i class="fas fa-envelope"></i>
-                  <div>
-                    <strong>{{ i18n.translate('email') }}</strong>
-                    <p><a href="mailto:info@spicedonor.fi">info&#64;spicedonor.fi</a></p>
-                  </div>
-                </div>
-                
-                <div class="info-item">
-                  <i class="fas fa-clock"></i>
-                  <div>
-                    <strong>{{ i18n.translate('opening_hours_title') }}</strong>
-                    <ul class="hours-list">
-                      <li>{{ i18n.translate('monday_friday') }}</li>
-                      <li>{{ i18n.translate('saturday') }}</li>
-                      <li>{{ i18n.translate('sunday') }}</li>
-                    </ul>
-                  </div>
-                </div>
+                <app-visit-info></app-visit-info>
               </div>
             </div>
             
@@ -56,12 +23,12 @@ import emailjs from '@emailjs/browser';
                 <h2>{{ i18n.translate('contact_us_or_make_reservation') }}</h2>
                 
                 <!-- Success/Error Messages -->
-                <div *ngIf="showSuccessMessage" class="alert alert-success">
+                <div *ngIf="showSuccessMessage" class="alert alert-success" role="status">
                   <i class="fas fa-check-circle"></i>
                   {{ i18n.translate('success_message') }}
                 </div>
                 
-                <div *ngIf="showErrorMessage" class="alert alert-danger">
+                <div *ngIf="showErrorMessage" class="alert alert-danger" role="alert">
                   <i class="fas fa-exclamation-circle"></i>
                   {{ i18n.translate('error_message') }}
                 </div>
@@ -71,14 +38,14 @@ import emailjs from '@emailjs/browser';
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="first_name">{{ i18n.translate('first_name') }} *</label>
-                        <input type="text" id="first_name" name="first_name" class="form-control" 
+                        <input type="text" id="first_name" name="first_name" autocomplete="given-name" class="form-control"
                                [placeholder]="i18n.translate('first_name_placeholder')" required>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="last_name">{{ i18n.translate('last_name') }} *</label>
-                        <input type="text" id="last_name" name="last_name" class="form-control" 
+                        <input type="text" id="last_name" name="last_name" autocomplete="family-name" class="form-control"
                                [placeholder]="i18n.translate('last_name_placeholder')" required>
                       </div>
                     </div>
@@ -88,19 +55,19 @@ import emailjs from '@emailjs/browser';
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="email">{{ i18n.translate('email_address') }} *</label>
-                        <input type="email" id="email" name="email" class="form-control" 
+                        <input type="email" id="email" name="email" autocomplete="email" class="form-control"
                                [placeholder]="i18n.translate('email_placeholder')" required>
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="form-group">
                         <label for="phone">{{ i18n.translate('phone_number') }}</label>
-                        <input type="tel" id="phone" name="phone" class="form-control" 
+                        <input type="tel" id="phone" name="phone" autocomplete="tel" inputmode="tel" class="form-control"
                                [placeholder]="i18n.translate('phone_placeholder')"
-                               pattern="^[\+]?[1-9][\d]{0,15}$"
-                               title="Please enter a valid phone number (e.g., +358401234567 or 0401234567)">
-                        <div class="invalid-feedback phone-error" style="display: none;">
-                          Please enter a valid phone number
+                               (input)="validatePhoneNumber($event)" (blur)="validatePhoneNumber($event)"
+                               [attr.aria-invalid]="phoneInvalid" [attr.aria-describedby]="phoneInvalid ? 'phone-error' : null">
+                        <div *ngIf="phoneInvalid" id="phone-error" class="invalid-feedback" role="alert">
+                          {{ i18n.translate('phone_invalid') }}
                         </div>
                       </div>
                     </div>
@@ -131,6 +98,14 @@ import emailjs from '@emailjs/browser';
     </div>
   `,
   styles: [`
+    .container > .row { display:grid; grid-template-columns:minmax(0,.85fr) minmax(0,1.5fr); gap:1.5rem; }
+    form .row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 1rem; }
+    .col-md-4,.col-md-8,.col-md-6 { min-width:0; }
+    @media(max-width:768px) {
+      .container > .row, form .row { grid-template-columns:1fr; }
+      .contact-info-card,.contact-form-card { padding:1.25rem !important; }
+    }
+
     .page-header {
       background-image: var(--image-background-orange);
       background-size: cover;
@@ -165,6 +140,7 @@ import emailjs from '@emailjs/browser';
     }
     
     .contact-info-card, .contact-form-card {
+      scroll-margin-top:150px;
       background-image: var(--image-background-black);
       background-size: cover;
       background-position: center;
@@ -263,6 +239,8 @@ import emailjs from '@emailjs/browser';
     }
     
     .form-control {
+      width:100%;
+      min-width:0;
       background: rgba(255, 255, 255, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: var(--radius-medium);
@@ -397,6 +375,7 @@ import emailjs from '@emailjs/browser';
       }
       
       .contact-info-card, .contact-form-card {
+      scroll-margin-top:150px;
         margin-bottom: 2rem;
       }
       
@@ -412,6 +391,7 @@ import emailjs from '@emailjs/browser';
   `]
 })
 export class ContactComponent {
+  phoneInvalid = false;
   isSubmitting = false;
   showSuccessMessage = false;
   showErrorMessage = false;
@@ -421,40 +401,10 @@ export class ContactComponent {
     emailjs.init('SwYGWuRATmlLhXvCL');
   }
 
-  ngAfterViewInit() {
-    // Add phone number validation listener
-    const phoneInput = document.getElementById('phone') as HTMLInputElement;
-    if (phoneInput) {
-      phoneInput.addEventListener('input', this.validatePhoneNumber.bind(this));
-      phoneInput.addEventListener('blur', this.validatePhoneNumber.bind(this));
-    }
-  }
-
-  validatePhoneNumber(event: Event) {
-    const phoneInput = event.target as HTMLInputElement;
-    const phoneError = phoneInput.parentElement?.querySelector('.phone-error') as HTMLElement;
-    
-    if (phoneInput.value.trim() === '') {
-      // Empty is valid since field is optional
-      phoneInput.classList.remove('is-invalid');
-      if (phoneError) phoneError.style.display = 'none';
-      return;
-    }
-    
-    // Phone number pattern: optional +, followed by 1-9, then 0-15 digits
-    // Allows formats like: +358401234567, 0401234567, 358401234567
-    const phonePattern = /^[\+]?[1-9][\d]{0,15}$/;
-    const isValid = phonePattern.test(phoneInput.value.trim());
-    
-    if (isValid) {
-      phoneInput.classList.remove('is-invalid');
-      phoneInput.classList.add('is-valid');
-      if (phoneError) phoneError.style.display = 'none';
-    } else {
-      phoneInput.classList.remove('is-valid');
-      phoneInput.classList.add('is-invalid');
-      if (phoneError) phoneError.style.display = 'block';
-    }
+  validatePhoneNumber(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.phoneInvalid = !isValidPhoneNumber(input.value);
+    input.setCustomValidity(this.phoneInvalid ? this.i18n.translate('phone_invalid') : '');
   }
 
   async onSubmit(event: Event) {
@@ -466,7 +416,7 @@ export class ContactComponent {
     const form = event.target as HTMLFormElement;
     const phoneInput = form.querySelector('#phone') as HTMLInputElement;
     
-    if (phoneInput && phoneInput.value.trim() && phoneInput.classList.contains('is-invalid')) {
+    if (phoneInput && !isValidPhoneNumber(phoneInput.value)) {
       // Don't submit if phone number is invalid
       phoneInput.focus();
       return;
@@ -477,44 +427,32 @@ export class ContactComponent {
     this.showErrorMessage = false;
 
     try {
-      console.log('Sending email using EmailJS...');
-      
       const formData = new FormData(form);
       
-      // Get the phone number and message
-      const phone = formData.get('phone') as string;
-      const originalMessage = formData.get('contact_type') as string;
-      
-      // If phone number is provided, concatenate it to the message
-      if (phone && phone.trim()) {
-        const messageWithPhone = `${originalMessage}\n\nPhone Number: ${phone.trim()}`;
-        
-        // Update the form data with the concatenated message
-        const messageField = form.querySelector('textarea[name="contact_type"]') as HTMLTextAreaElement;
-        if (messageField) {
-          messageField.value = messageWithPhone;
-        }
-      }
-      
-      // Use the exact pattern from your working sample
-      const result = await emailjs.sendForm(
-        'service_5aorl74',  // Service ID
-        'template_9lm9mzo', // Template ID  
-        form
-      );
-      
-      console.log('Email sent successfully:', result);
+      const phone = String(formData.get('phone') || '').trim();
+      const originalMessage = String(formData.get('contact_type') || '');
+      // Build the outgoing payload without changing the editable message on failed attempts.
+      await emailjs.send('service_5aorl74', 'template_9lm9mzo', {
+        first_name: formData.get('first_name'),
+        last_name: formData.get('last_name'),
+        email: formData.get('email'),
+        phone,
+        contact_type: phone ? originalMessage + '\n\nPhone Number: ' + phone : originalMessage
+      });
+
       this.showSuccessMessage = true;
       
       // Reset the form
       form.reset();
+      this.phoneInvalid = false;
       
       // Scroll to top to show success message
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.querySelector('.contact-form-card')?.scrollIntoView({ block: 'start' });
 
     } catch (error: any) {
       console.error('Error sending email:', error);
       this.showErrorMessage = true;
+      document.querySelector('.contact-form-card')?.scrollIntoView({ block: 'start' });
       
       // Log specific error details
       if (error.status) {

@@ -155,3 +155,9 @@
     }
   }
 }
+
+// Both delivery partners stay visible at every width.
+.platform-buttons[data-variant="full"] { flex-direction:column; overflow:visible; width:100%; }
+.platform-buttons[data-variant="full"] .platform-btn { min-height:54px; width:100%; min-width:0; flex-shrink:1; }
+.platform-buttons[data-variant="full"] .platform-text { max-width:none; overflow:visible; white-space:normal; }
+.platform-buttons[data-variant="compact"] .platform-btn { min-height:44px; }

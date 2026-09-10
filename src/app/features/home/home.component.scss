@@ -290,3 +290,35 @@
   .signature-card,
   .signature-image img { transition: none; }
 }
+
+// Static food photograph and concise mobile landing page.
+.hero { min-height:560px; }
+.hero-visual { position:absolute; inset:0 0 0 30%; z-index:0; }
+.visit-strip { background:#272126; padding:1.2rem 0; border-block:1px solid #493b42; }
+.benefit-list { display:flex; flex-wrap:wrap; gap:.6rem; }
+.benefit-list span { padding:.5rem .8rem; border:1px solid #5b444f; border-radius:999px; color:var(--text-light); font-size:.9rem; }
+.highlights h2 { font-size:1.5rem; }
+@media(max-width:768px) {
+ .hero { min-height:540px; }
+ .hero-visual { inset:0 0 130px; }
+ .hero::before { background:linear-gradient(0deg,#151315 0%,rgba(21,19,21,.95) 20%,rgba(21,19,21,.2) 60%,transparent); }
+ .hero-content { padding:15rem 0 1.4rem; }
+ .hero-title { font-size:clamp(2.8rem,14vw,4rem); margin-bottom:.8rem; }
+ .hero-kicker { margin-bottom:.8rem; }
+ .hero-subtitle { margin-bottom:1rem; }
+ .hero-actions { flex-direction:row; align-items:center; gap:.7rem; }
+ .hero .btn-lg { min-height:46px; padding:.65rem 1rem; font-size:.9rem; }
+ .signature-section { padding:2rem 0; }
+ .signature-header { margin-bottom:1rem; }
+ .signature-header h2 { font-size:1.8rem; }
+ .signature-card { display:grid; grid-template-columns:112px minmax(0,1fr); }
+ .signature-image { min-height:140px; height:100%; aspect-ratio:auto; }
+ .signature-number { display:none; }
+ .signature-body { padding:1rem; }
+ .signature-title-row { flex-direction:column; gap:.35rem; }
+ .signature-body p { font-size:.85rem; }
+ .signature-body .text-link { min-height:44px; margin-top:0; }
+ .cta-section,.location-section { padding:2rem 0; }
+ .section-header { margin-bottom:1.25rem; }
+ .cta-section h2,.location-section h2 { font-size:1.8rem; }
+}

@@ -603,3 +603,9 @@ input, textarea, select {
 .highlight-card:hover .highlight-icon {
   transform: scale(1.05);
 }
+
+@media (max-width: 768px) {
+  body { padding-bottom:calc(68px + env(safe-area-inset-bottom)); }
+  body:has(.cookie-banner) .mobile-order-bar { visibility:hidden; }
+}
+summary:focus-visible, select:focus-visible { outline:2px solid var(--secondary-color); outline-offset:3px; }

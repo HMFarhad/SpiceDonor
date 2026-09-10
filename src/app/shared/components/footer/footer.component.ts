@@ -94,7 +94,7 @@ import { map } from 'rxjs/operators';
             <a routerLink="/terms" class="footer-link">{{ i18n.translate('terms_of_service') }}</a>
           </div>
           <div class="footer-copyright">
-            <p>&copy; {{ currentYear }} Spice Döner. All rights reserved.</p>
+            <p>&copy; {{ currentYear }} Spice Döner. {{ i18n.translate('rights_reserved') }}</p>
           </div>
         </div>
       </div>

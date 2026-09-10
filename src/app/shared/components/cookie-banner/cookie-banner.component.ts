@@ -12,8 +12,7 @@ import { AnalyticsService, I18nService } from '@core/services';
           <div class="cookie-text">
             <h3 id="cookie-title" class="cookie-title">{{ i18n.translate('cookie_consent') }}</h3>
             <p id="cookie-description" class="cookie-description">
-              We use cookies to improve your browsing experience and analyze site traffic. 
-              By accepting, you consent to our use of analytics cookies.
+              {{ i18n.translate('cookie_description') }}
             </p>
           </div>
           <div class="cookie-actions">

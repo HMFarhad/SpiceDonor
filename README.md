@@ -391,3 +391,15 @@ The application is designed for easy maintenance:
 ---
 
 **Built with ❤️ for the restaurant industry**
+
+## Mobile menu photos
+
+Run `npm run images:optimize` after adding or replacing JPEGs in `src/assets/images/Items/`.
+This generates cropped WebP variants at 480, 960 and 1440 pixels and updates the image manifest.
+Commit the generated images and manifest together. Workbook image URLs stay unchanged; unknown
+or externally hosted images continue to use their supplied URL. Only the selected photo is rendered;
+customers can tap the photo counter to view another.
+Unchanged images are reused. Use `npm run images:optimize -- --force` after changing encoding settings.
+
+Before live deployment, replace the placeholder public phone number and the generic Uber Eats URL
+in the menu workbook's `site_settings` sheet. The visit details and ordering panel share these settings.

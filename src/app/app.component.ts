@@ -12,6 +12,7 @@ import { I18nService, SeoService, AnalyticsService } from '@core/services';
         <router-outlet></router-outlet>
       </main>
       <app-footer></app-footer>
+      <app-order-panel></app-order-panel>
       <app-cookie-banner></app-cookie-banner>
     </div>
   `,

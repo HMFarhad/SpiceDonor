@@ -52,6 +52,8 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes, {
     enableTracing: false,
     scrollPositionRestoration: 'top',
+    anchorScrolling: 'enabled',
+    scrollOffset: [0, 160],
     preloadingStrategy: undefined // Will be configured for production
   })],
   exports: [RouterModule]

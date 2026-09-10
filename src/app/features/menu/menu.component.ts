@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ViewportScroller } from '@angular/common';
+import { DOCUMENT } from '@angular/common';
+import { Inject } from '@angular/core';
 import { MenuDataService, SeoService, I18nService } from '@core/services';
 import { Category, MenuItem } from '@core/models';
 
@@ -9,155 +10,86 @@ import { Category, MenuItem } from '@core/models';
   selector: 'app-menu',
   template: `
     <div class="menu-page">
-      <!-- Menu Content -->
       <section class="section">
         <div class="container">
-          <!-- Loading State -->
-          <div *ngIf="(loading$ | async) && !(menuData$ | async)" class="loading" role="status" aria-live="polite">
-            <div class="loading-spinner"></div>
-            <p>{{ i18n.translate('loading') }}...</p>
+          <div *ngIf="(loading$ | async) && !(menuData$ | async)" class="loading" role="status">
+            <div class="loading-spinner"></div><p>{{ i18n.translate('loading') }}</p>
           </div>
-
-          <!-- Error State -->
-          <div *ngIf="error$ | async as error" class="error-container" role="alert">
-            <div class="error-icon">⚠️</div>
-            <h3 class="error-title">{{ i18n.translate('error_loading_menu') }}</h3>
-            <p class="error-message">{{ error }}</p>
+          <div *ngIf="error$ | async" class="error-container" role="alert">
+            <h2>{{ i18n.translate('error_loading_menu') }}</h2>
             <button (click)="retryLoad()" class="btn btn-primary">{{ i18n.translate('retry') }}</button>
           </div>
-
-          <!-- Menu Content -->
-          <div *ngIf="menuData$ | async as menuData">
-            <header class="menu-intro">
-              <p class="menu-eyebrow"><app-brand-wordmark></app-brand-wordmark> · Malmi</p>
-              <h1>{{ i18n.translate('menu') }}</h1>
-              <p>{{ i18n.translate('Fresh ingredients, authentic flavors, healthy options') }}</p>
-            </header>
-            
-            <!-- Dietary Legend -->
-            <div class="dietary-legend card mb-4">
-              <div class="card-body">
-                <h4 class="legend-title">{{ i18n.translate('dietary_guide') }}</h4>
+          <ng-container *ngIf="menuData$ | async as menuData">
+            <header class="menu-intro"><h1>{{ i18n.translate('menu') }}</h1></header>
+            <nav class="categories-nav" [attr.aria-label]="i18n.translate('categories')">
+              <label for="category-choice">{{ i18n.translate('all_categories') }}</label>
+              <select id="category-choice" [ngModel]="activeCategory" (ngModelChange)="setActiveCategory($event)">
+                <option [ngValue]="null">{{ i18n.translate('all_dishes') }}</option>
+                <option *ngFor="let category of visibleCategories$ | async" [ngValue]="category.id">{{ shortCategoryName(category) }}</option>
+              </select>
+            </nav>
+            <div class="dietary-legend">
+              <p class="allergy-note">{{ i18n.translate('allergy_short') }}</p>
+              <details>
+                <summary>{{ i18n.translate('dietary_guide') }}</summary>
                 <div class="legend-items">
-                  <span class="legend-item"><strong>L</strong> = {{ i18n.translate('lactose_free') }}</span>
-                  <span class="legend-item"><strong>G</strong> = {{ i18n.translate('gluten_free') }}</span>
-                  <span class="legend-item"><strong>M</strong> = {{ i18n.translate('dairy_free') }}</span>
-                  <span class="legend-item"><strong>K</strong> = {{ i18n.translate('vegetarian') }}</span>
-                  <span class="legend-item"><strong>V</strong> = {{ i18n.translate('vegan') }}</span>
-                  <span class="legend-item"><strong>H</strong> = {{ i18n.translate('halal') }}</span>
+                  <span><b>L</b> {{ i18n.translate('lactose_free') }}</span>
+                  <span><b>G</b> {{ i18n.translate('gluten_free') }}</span>
+                  <span><b>M</b> {{ i18n.translate('dairy_free') }}</span>
+                  <span><b>K</b> {{ i18n.translate('vegetarian') }}</span>
+                  <span><b>V</b> {{ i18n.translate('vegan') }}</span>
+                  <span><b>H</b> {{ i18n.translate('halal') }}</span>
                 </div>
-                <p class="legend-note">{{ i18n.translate('(G) = Available gluten-free on request. Pitas, mezze plates and bowls can be made gluten-free, except wraps.') }}</p>
-                <p class="legend-note">{{ i18n.translate('allergy_care_note') }}</p>
-              </div>
+                <p>{{ i18n.translate('(G) = Available gluten-free on request. Pitas, mezze plates and bowls can be made gluten-free, except wraps.') }}</p>
+                <p>{{ i18n.translate('allergy_care_note') }}</p>
+              </details>
             </div>
-            
-            <!-- Categories Navigation -->
-            <div class="categories-nav">
-              <button 
-                *ngFor="let category of visibleCategories$ | async" 
-                (click)="setActiveCategory(category.id)"
-                [class.active]="activeCategory === category.id"
-                [attr.aria-pressed]="activeCategory === category.id"
-                class="category-btn">
-                {{ i18n.getLocalizedContent(category.name) }}
-              </button>
-            </div>
-
-            <div *ngIf="menuData.items.length === 0" class="empty-menu card" role="status">
-              <div class="card-body">
-                <h2>{{ i18n.translate('menu') }}</h2>
-                <p>{{ i18n.translate('unavailable') }}</p>
-              </div>
-            </div>
-
-            <!-- Menu Items -->
-            <div class="menu-items" *ngFor="let category of visibleCategories$ | async">
-              <div 
-                *ngIf="!activeCategory || activeCategory === category.id"
-                class="category-section"
-                [id]="'category-' + category.id">
-                <h2 class="category-title">{{ i18n.getLocalizedContent(category.name) }}</h2>
-                <p 
-                  *ngIf="category.description"
-                  class="category-description">
-                  {{ i18n.getLocalizedContent(category.description) }}
-                </p>
-                
-                <div class="grid grid-2">
-                  <div 
-                    *ngFor="let item of getItemsForCategory(menuData.items, category.id); let i = index"
-                    class="menu-item card"
-                    [class.has-image]="item.imageUrls.length">
-                    <div
-                      class="menu-item-image"
-                      *ngIf="item.imageUrls.length as imageCount"
-                      [class.has-multiple]="imageCount > 1"
-                      [class.image-count-2]="imageCount === 2"
-                      [class.image-count-3]="imageCount === 3"
-                      [class.image-count-4]="imageCount === 4">
-                      <img 
-                        *ngFor="let imageUrl of item.imageUrls; let imageIndex = index"
-                        [src]="imageUrl"
-                        [alt]="imageIndex === 0 ? i18n.getLocalizedContent(item.name) : ''"
-                        [attr.aria-hidden]="imageIndex > 0 ? 'true' : null"
-                        loading="lazy">
-                      <div *ngIf="imageCount > 1" class="image-rotation-dots" aria-hidden="true">
-                        <span *ngFor="let imageUrl of item.imageUrls"></span>
-                      </div>
-                    </div>
-                    <div class="card-body">
+            <div id="menu-results" tabindex="-1">
+              <div *ngIf="!hasAvailableItems(menuData.items)" class="empty-menu" role="status">{{ i18n.translate('unavailable') }}</div>
+              <ng-container *ngFor="let category of visibleCategories$ | async">
+                <section *ngIf="(!activeCategory || activeCategory === category.id) && getItemsForCategory(menuData.items, category.id).length"
+                  class="category-section" [id]="'category-' + category.id">
+                  <h2 class="category-title">{{ shortCategoryName(category) }}</h2>
+                  <details *ngIf="i18n.getLocalizedContent(category.description)" class="category-description">
+                    <summary>{{ i18n.translate('serving_options') }}</summary>
+                    <p>{{ i18n.getLocalizedContent(category.description) }}</p>
+                  </details>
+                  <div class="menu-grid" [class.simple-list]="isSimpleCategory(category.id)">
+                    <article *ngFor="let item of getItemsForCategory(menuData.items, category.id); let i = index"
+                      class="menu-item" [id]="'dish-' + item.id" [class.has-image]="item.imageUrls.length && !isSimpleCategory(category.id)">
+                      <app-food-photo *ngIf="item.imageUrls.length && !isSimpleCategory(category.id)"
+                        [urls]="item.imageUrls" [alt]="i18n.getLocalizedContent(item.name)"></app-food-photo>
                       <div class="menu-item-header">
-                        <div class="menu-item-title-row">
-                          <span class="menu-item-number">{{ getCategoryItemNumber(category.id, i) }}</span>
-                          <h3 class="menu-item-name">
-                            {{ i18n.getLocalizedContent(item.name) }}
-                            <span *ngIf="item.dietaryTags && item.dietaryTags.length > 0" class="dietary-codes-inline">
-                              ({{ item.dietaryTags.join(', ') }})
-                            </span>
-                          </h3>
+                        <h3>{{ i18n.getLocalizedContent(item.name) }}</h3>
+                        <p *ngIf="item.dietaryTags.length" class="dietary-codes">{{ item.dietaryTags.join(' · ') }}</p>
+                        <div class="price-row">
+                          <span *ngIf="item.priceLabel">{{ i18n.getLocalizedContent(item.priceLabel) }}</span>
+                          <strong>{{ i18n.formatPrice(item.discountPrice || item.price, item.currency) }}</strong>
+                          <del *ngIf="item.discountPrice">{{ i18n.formatPrice(item.price, item.currency) }}</del>
                         </div>
-                        <div class="menu-item-price">
-                          <span class="price-current">
-                            <span *ngIf="item.priceLabel">{{ i18n.getLocalizedContent(item.priceLabel) }}: </span>
-                            {{ i18n.formatPrice(item.discountPrice || item.price, item.currency) }}
-                            <span *ngIf="item.priceLarge" class="price-large">/ {{ i18n.translate('meal') }} {{ i18n.formatPrice(item.priceLarge, item.currency) }}</span>
-                          </span>
-                          <span *ngIf="item.priceAlt" class="price-current price-alternate">
-                            <span *ngIf="item.priceAltLabel">{{ i18n.getLocalizedContent(item.priceAltLabel) }}: </span>
-                            {{ i18n.formatPrice(item.priceAlt, item.currency) }}
-                            <span *ngIf="item.priceAltLarge" class="price-large">/ {{ i18n.translate('meal') }} {{ i18n.formatPrice(item.priceAltLarge, item.currency) }}</span>
-                          </span>
-                          <span 
-                            *ngIf="item.discountPrice" 
-                            class="price-original">
-                            {{ i18n.formatPrice(item.price, item.currency) }}
-                          </span>
+                        <div *ngIf="item.priceLarge" class="meal-price">{{ i18n.translate('meal') }} {{ i18n.formatPrice(item.priceLarge, item.currency) }}</div>
+                        <div *ngIf="item.priceAlt" class="price-row alternate-price">
+                          <span>{{ i18n.getLocalizedContent(item.priceAltLabel) }}</span>
+                          <strong>{{ i18n.formatPrice(item.priceAlt, item.currency) }}</strong>
                         </div>
+                        <div *ngIf="item.priceAltLarge" class="meal-price">{{ i18n.translate('meal') }} {{ i18n.formatPrice(item.priceAltLarge, item.currency) }}</div>
                       </div>
-                      <p class="menu-item-description">{{ i18n.getLocalizedContent(item.description) }}</p>
-                      
-                      <!-- Order Buttons -->
-                      <div class="menu-item-actions">
-                        <app-platform-buttons 
-                          [variant]="'compact'"
-                          [orderLinks]="item.orderLinks"
-                          [itemId]="item.id">
-                        </app-platform-buttons>
+                      <p *ngIf="item.description" class="menu-item-description">{{ summary(item) }}</p>
+                      <details *ngIf="!isSimpleCategory(category.id) && i18n.getLocalizedContent(item.description)" class="ingredients">
+                        <summary>{{ i18n.translate('ingredients') }}<span class="sr-only">: {{ i18n.getLocalizedContent(item.name) }}</span></summary>
+                        <p>{{ i18n.getLocalizedContent(item.description) }}</p>
+                      </details>
+                      <div *ngIf="!isSimpleCategory(category.id)" class="menu-item-actions">
+                        <app-platform-buttons variant="compact" [orderLinks]="item.orderLinks" [itemId]="item.id"
+                          [fallbackLinks]="{wolt:menuData.settings.externalOrderWoltUrl, uberEats:menuData.settings.externalOrderUberEatsUrl}"></app-platform-buttons>
                       </div>
-                    </div>
+                    </article>
                   </div>
-                </div>
-              </div>
+                </section>
+              </ng-container>
             </div>
-
-            <!-- Last Updated Info -->
-            <div class="last-updated text-center text-muted">
-              <small>
-                {{ i18n.translate('last_updated') }}: 
-                {{ i18n.formatDate(menuData.lastUpdated) }}
-              </small>
-            </div>
-          </div>
+            <p class="last-updated">{{ i18n.translate('last_updated') }}: {{ i18n.formatDate(menuData.lastUpdated) }}</p>
+          </ng-container>
         </div>
       </section>
     </div>
@@ -175,7 +107,7 @@ export class MenuComponent implements OnInit {
   constructor(
     private menuDataService: MenuDataService,
     private seoService: SeoService,
-    private viewportScroller: ViewportScroller,
+    @Inject(DOCUMENT) private document: Document,
     public i18n: I18nService
   ) {
     this.visibleCategories$ = this.menuData$.pipe(
@@ -200,15 +132,29 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  setActiveCategory(categoryId: string): void {
-    this.activeCategory = this.activeCategory === categoryId ? null : categoryId;
-    
-    // Scroll to the category section after a short delay to allow DOM updates
-    if (this.activeCategory) {
-      setTimeout(() => {
-        this.viewportScroller.scrollToAnchor('category-' + categoryId);
-      }, 100);
-    }
+  setActiveCategory(categoryId: string | null): void {
+    this.activeCategory = categoryId;
+    // Native scrollIntoView honors the CSS offset for both fixed navigation bars.
+    setTimeout(() => {
+      this.document.getElementById('menu-results')?.scrollIntoView({ block: 'start' });
+    });
+  }
+
+  shortCategoryName(category: Category): string {
+    const key = category.id + '_short';
+    const translated = this.i18n.translate(key);
+    return translated === key ? this.i18n.getLocalizedContent(category.name) : translated;
+  }
+
+  isSimpleCategory(id: string): boolean { return ['beverages', 'dips'].includes(id); }
+  hasAvailableItems(items: MenuItem[]): boolean {
+    return items.some(item => item.available && (!this.activeCategory || item.categoryId === this.activeCategory));
+  }
+  summary(item: MenuItem): string {
+    const description = this.i18n.getLocalizedContent(item.description);
+    if (this.isSimpleCategory(item.categoryId) || description.length <= 95) return description;
+    const excerpt = description.slice(0, 95);
+    return excerpt.slice(0, excerpt.lastIndexOf(' ')) + '…';
   }
 
   getItemsForCategory(items: MenuItem[], categoryId: string): MenuItem[] {

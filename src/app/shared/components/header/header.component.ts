@@ -1,3 +1,4 @@
+import { OrderPanelService } from '../../order-panel.service';
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MenuData } from '@core/models';
@@ -43,13 +44,13 @@ import { MenuDataService, I18nService } from '@core/services';
 
           <div class="header-actions">
             <app-language-switcher></app-language-switcher>
-            <app-platform-buttons [variant]="'compact'" class="hide-mobile"></app-platform-buttons>
+            <button class="btn btn-primary hide-mobile" (click)="orders.open()">{{ i18n.translate('order_now') }}</button>
             
             <button 
               class="mobile-menu-toggle hide-desktop"
               aria-controls="main-navigation"
               [attr.aria-expanded]="isMenuOpen"
-              [attr.aria-label]="isMenuOpen ? 'Close menu' : 'Open menu'"
+              [attr.aria-label]="i18n.translate(isMenuOpen ? 'close_menu' : 'open_menu')"
               (click)="toggleMenu()">
               <span class="hamburger" [class.active]="isMenuOpen">
                 <span></span>
@@ -70,6 +71,7 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private menuDataService: MenuDataService,
+    public orders: OrderPanelService,
     public i18n: I18nService
   ) {
     this.menuData$ = this.menuDataService.menuData$;
