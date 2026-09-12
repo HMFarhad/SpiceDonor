@@ -59,8 +59,6 @@ import { map } from 'rxjs/operators';
             <h4 class="footer-title">{{ i18n.translate('menu') }}</h4>
             <ul class="footer-links">
               <li><a routerLink="/menu" class="footer-link">{{ i18n.translate('view_menu') }}</a></li>
-              <li><a routerLink="/catering" class="footer-link">{{ i18n.translate('catering') }}</a></li>
-              <li><a routerLink="/faq" class="footer-link">{{ i18n.translate('faq') }}</a></li>
             </ul>
           </div>
 
@@ -94,7 +92,7 @@ import { map } from 'rxjs/operators';
             <a routerLink="/terms" class="footer-link">{{ i18n.translate('terms_of_service') }}</a>
           </div>
           <div class="footer-copyright">
-            <p>&copy; {{ currentYear }} Spice Döner. {{ i18n.translate('rights_reserved') }}</p>
+            <p>&copy; {{ currentYear }} Spice Döners Suomi Oy · Business ID 3614901-8. {{ i18n.translate('rights_reserved') }}</p>
           </div>
         </div>
       </div>

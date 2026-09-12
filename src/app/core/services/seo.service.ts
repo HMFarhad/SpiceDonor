@@ -4,6 +4,8 @@ import { Meta, Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { SiteSettings } from '../models';
 import { I18nService } from './i18n.service';
+import { environment } from '@environments/environment';
+import { BUSINESS_DETAILS } from '@core/business-details';
 
 export interface SeoData {
   title: string;
@@ -69,6 +71,8 @@ export class SeoService {
       '@context': 'https://schema.org',
       '@type': 'Restaurant',
       'name': this.i18nService.getLocalizedContent(settings.heroTitle),
+      'legalName': BUSINESS_DETAILS.legalName,
+      'identifier': BUSINESS_DETAILS.businessId,
       'description': this.i18nService.getLocalizedContent(settings.heroSubtitle),
       'address': {
         '@type': 'PostalAddress',
@@ -79,7 +83,7 @@ export class SeoService {
       },
       'telephone': settings.phone,
       'email': settings.email,
-      'url': this.getCurrentUrl(),
+      'url': environment.siteUrl,
       'servesCuisine': 'Middle Eastern',
       'priceRange': '€€',
       'acceptsReservations': false,
@@ -221,7 +225,9 @@ export class SeoService {
       return path;
     }
     
-    const baseUrl = `${this.document.location.protocol}//${this.document.location.host}`;
+    const baseUrl = environment.production
+      ? environment.siteUrl
+      : `${this.document.location.protocol}//${this.document.location.host}`;
     return `${baseUrl}${path.startsWith('/') ? path : '/' + path}`;
   }
 

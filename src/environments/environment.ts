@@ -2,6 +2,7 @@ import { DataSourceConfig, Environment, DataSourceType } from '@core/models';
 
 export const environment: Environment = {
   production: false,
+  siteUrl: 'http://localhost:4200',
   dataSource: {
     type: DataSourceType.FILE_URL, // Change to DataSourceType.GOOGLE_SHEET if using Google Sheets API
     fileUrl: {
@@ -30,8 +31,7 @@ export const environment: Environment = {
     // }
   },
   externalOrder: {
-    wolt: 'https://wolt.com/fi/restaurant/bengal-ruokopaikka',
-    uberEats: 'https://www.ubereats.com/fi'
+    wolt: 'https://wolt.com/fi/restaurant/spice-donor'
   },
   defaultLocale: 'en',
   supportedLocales: ['en', 'fi'],
@@ -39,5 +39,5 @@ export const environment: Environment = {
     primary: '#2E6F40',
     secondary: '#D4A373'
   },
-  ga4MeasurementId: undefined // Set your GA4 measurement ID here
+  ga4MeasurementId: undefined
 };

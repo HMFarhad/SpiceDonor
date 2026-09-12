@@ -180,6 +180,7 @@ export interface DataSourceConfig {
 
 export interface Environment {
   production: boolean;
+  siteUrl: string;
   dataSource: DataSourceConfig;
   externalOrder: OrderLinks;
   defaultLocale: string;

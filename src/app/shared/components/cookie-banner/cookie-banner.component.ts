@@ -39,6 +39,10 @@ export class CookieBannerComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    if (!this.analyticsService.isEnabled()) {
+      this.showBanner = false;
+      return;
+    }
     // Check if consent has already been given or denied
     const hasConsentDecision = this.hasConsentDecision();
     this.showBanner = !hasConsentDecision;

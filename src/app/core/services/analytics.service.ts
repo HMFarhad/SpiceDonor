@@ -1,5 +1,6 @@
 import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { environment } from '@environments/environment';
 
 declare let gtag: Function;
 
@@ -16,14 +17,15 @@ export class AnalyticsService {
   }
 
   private initializeGoogleAnalytics(): void {
-    if (!isPlatformBrowser(this.platformId)) {
+    const measurementId = this.getMeasurementId();
+    if (!isPlatformBrowser(this.platformId) || !measurementId) {
       return;
     }
 
     // Load gtag script
     const gtagScript = document.createElement('script');
     gtagScript.async = true;
-    gtagScript.src = `https://www.googletagmanager.com/gtag/js?id=${this.getMeasurementId()}`;
+    gtagScript.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
     document.head.appendChild(gtagScript);
 
     // Initialize gtag
@@ -36,7 +38,7 @@ export class AnalyticsService {
         'analytics_storage': '${this.consentGiven ? 'granted' : 'denied'}',
         'ad_storage': 'denied'
       });
-      gtag('config', '${this.getMeasurementId()}', {
+      gtag('config', '${measurementId}', {
         'send_page_view': ${this.consentGiven}
       });
     `;
@@ -71,6 +73,10 @@ export class AnalyticsService {
 
   public hasConsent(): boolean {
     return this.consentGiven;
+  }
+
+  public isEnabled(): boolean {
+    return Boolean(this.getMeasurementId());
   }
 
   public trackEvent(action: string, category: string, label?: string, value?: number): void {
@@ -137,8 +143,7 @@ export class AnalyticsService {
     }
   }
 
-  private getMeasurementId(): string {
-    // This should come from environment variables
-    return 'G-XXXXXXXXXX'; // Replace with actual measurement ID
+  private getMeasurementId(): string | undefined {
+    return environment.ga4MeasurementId;
   }
 }

@@ -1,9 +1,10 @@
-import { DataSourceConfig, Environment } from '@core/models';
+import { Environment, DataSourceType } from '@core/models';
 
 export const environment: Environment = {
   production: true,
+  siteUrl: 'https://spicedonor.fi',
   dataSource: {
-    type: 'fileUrl', // Configure for production
+    type: DataSourceType.FILE_URL,
     fileUrl: {
       workbookUrl: 'assets/data/menu.xlsx',
       categories: 'assets/data/categories.csv',
@@ -16,8 +17,7 @@ export const environment: Environment = {
     }
   },
   externalOrder: {
-    wolt: 'https://wolt.com/fi/your-restaurant',
-    uberEats: 'https://www.ubereats.com/fi'
+    wolt: 'https://wolt.com/fi/restaurant/spice-donor'
   },
   defaultLocale: 'en',
   supportedLocales: ['en', 'fi'],
@@ -25,5 +25,5 @@ export const environment: Environment = {
     primary: '#2E6F40',
     secondary: '#D4A373'
   },
-  ga4MeasurementId: 'G-XXXXXXXXXX' // Set your actual GA4 measurement ID
+  ga4MeasurementId: undefined
 };

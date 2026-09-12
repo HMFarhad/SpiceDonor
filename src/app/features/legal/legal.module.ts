@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../shared/shared.module';
-import { LegalComponent } from '../placeholder.components';
+import { LegalComponent } from './legal.component';
 
 @NgModule({
   declarations: [LegalComponent],

@@ -1,71 +1,57 @@
-# Spice Döner Deployment Guide
+# Spice Döner deployment guide
 
-## GitHub Pages Deployment
+The production site is designed for Cloudflare Pages. GitHub remains the source-code
+repository and its Pages workflow remains available as a secondary preview.
 
-This application is configured for deployment to GitHub Pages at `hmfarhad.github.io/SpiceDonor`.
+## Cloudflare Pages settings
 
-### Prerequisites
-- GitHub repository named `SpiceDonor`
-- GitHub Pages enabled for the repository
+Create one Pages project from the `HMFarhad/SpiceDonor` GitHub repository with:
 
-### Automated Deployment
+- Production branch: `main`
+- Framework preset: Angular
+- Build command: `npm run build`
+- Build output directory: `dist/restaurant-website/browser`
+- Node.js version: `20`
 
-The deployment is now fully automated using GitHub Actions. Simply push to the `main` branch:
+No paid hosting space, VPS, database, or server is required. Cloudflare builds the
+static Angular application after every push to `main` and provides HTTPS automatically.
 
-```bash
-git add .
-git commit -m "Your commit message"
-git push origin main
-```
+## Domains
 
-### GitHub Pages Setup
+Use `spicedonor.fi` as the primary address. Add these custom domains to the same Pages
+project:
 
-1. Go to repository: `https://github.com/hmfarhad/SpiceDonor`
-2. Navigate to **Settings** → **Pages**
-3. Set source to **GitHub Actions**
-4. The GitHub Actions workflow will automatically:
-   - Install dependencies
-   - Build the Angular application
-   - Deploy to GitHub Pages
+- `spicedonor.fi`
+- `www.spicedonor.fi`
+- `spicedonor.com`
+- `www.spicedonor.com`
 
-### Manual Build (Optional)
+Create Cloudflare redirect rules so all non-primary variants permanently redirect to
+`https://spicedonor.fi` while preserving the path and query string. Do not enter custom
+nameservers at the registrar until Cloudflare displays the exact two nameserver values
+assigned to each domain. Then replace the registrar defaults with those values.
 
-If you need to build locally:
-```bash
-npm install
-npm run build
-```
+## Included production behavior
 
-### Configuration Details
+- Root-domain Angular routing and a Cloudflare SPA fallback
+- Canonical, Open Graph, sitemap, and robots URLs for `spicedonor.fi`
+- Security and caching headers
+- Optimized menu images only in the deployed asset bundle
+- `menu.xlsx` published at `assets/data/menu.xlsx`
+- Legal company details and Finnish/English privacy and website terms
+- Analytics disabled until a real GA4 measurement ID is deliberately configured
 
-- **Base HREF:** Set to `/SpiceDonor/` for subdirectory deployment
-- **GitHub Actions:** Automated build and deployment workflow
-- **Routing:** Configured with 404.html for GitHub Pages SPA routing
-- **Assets:** Includes all necessary files (images, data, manifest)
-- **PWA:** Service worker configured for GitHub Pages URLs
-- **Build Output:** `dist/restaurant-website/browser/` is deployed
+## Verification after the first Pages deployment
 
-### File Structure After Build:
-```
-dist/restaurant-website/
-├── index.html (with base href="/SpiceDonor/")
-├── 404.html (SPA routing fallback)
-├── CNAME (custom domain config)
-├── _redirects (fallback routing)
-├── assets/
-├── data/
-├── manifest.json
-└── ... (Angular build files)
-```
+1. Test the generated `*.pages.dev` address before attaching domains.
+2. Open `/`, `/menu`, `/contact`, `/privacy`, and `/terms` directly in a new tab.
+3. Confirm the Forum address, menu prices, opening hours, Wolt link, map, and both
+   languages with the restaurant owner.
+4. Submit the contact form and confirm the message arrives at the intended mailbox.
+5. Confirm HTTPS and all `.com`/`www` redirects after DNS becomes active.
 
-### Verification
-After deployment, the site should be available at:
-`https://hmfarhad.github.io/SpiceDonor/`
+## GitHub Pages preview
 
-### Troubleshooting
-- Ensure GitHub Pages is enabled and set to "GitHub Actions" in repository settings
-- Check the Actions tab for build/deployment status
-- Verify the base href is correctly set to `/SpiceDonor/`
-- Check that the workflow file `.github/workflows/deploy.yml` exists
-- Wait a few minutes for GitHub Pages to update after successful deployment
-- Review workflow logs if deployment fails
+The GitHub Actions workflow supplies `/SpiceDonor/` as the base path only for the
+GitHub Pages preview. The default production build uses `/` for Cloudflare and the
+custom domains.

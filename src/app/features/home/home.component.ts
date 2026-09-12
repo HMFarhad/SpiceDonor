@@ -16,7 +16,7 @@ import { MenuItem, SiteSettings, Special } from '@core/models';
         <div class="container">
           <div class="hero-content">
             <div class="hero-text">
-              <p class="hero-kicker">Malminkaari 9 · Helsinki</p>
+              <p class="hero-kicker">Kauppakeskus Forum · Helsinki</p>
               <h1 class="hero-title">
                 <app-brand-wordmark
                   *ngIf="i18n.getLocalizedContent(settings.heroTitle) === 'Spice Döner'; else customHeroTitle">
@@ -156,14 +156,14 @@ import { MenuItem, SiteSettings, Special } from '@core/models';
             <div class="location-map">
               <div class="map-container">
                 <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1949.8766879397847!2d25.010456716094384!3d60.25114438197743!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x468df60c2b3d6a8d%3A0x5048c73b8e4b1c1e!2sMalminkaari%209%2C%2000700%20Helsinki!5e0!3m2!1sen!2sfi!4v1703078400000!5m2!1sen!2sfi"
+                  src="https://maps.google.com/maps?q=Kauppakeskus+Forum,+Mannerheimintie+20,+00100+Helsinki&amp;output=embed"
                   width="100%" 
                   height="350"
                   style="border:0; border-radius: 8px;" 
                   allowfullscreen="" 
                   loading="lazy" 
                   referrerpolicy="no-referrer-when-downgrade"
-                  [attr.aria-label]="'Map showing location of Spice Döner at Malminkaari 9, Helsinki'">
+                  [attr.aria-label]="'Map showing Spice Döner at Kauppakeskus Forum, Helsinki'">
                 </iframe>
               </div>
             </div>

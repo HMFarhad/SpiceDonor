@@ -52,6 +52,8 @@ export class VisitInfoComponent {
   }
   cleanPhone(phone: string): string { return phone.replace(/[\s()-]/g, ''); }
   directionsUrl(settings: SiteSettings): string {
-    return 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(`${settings.addressLine1}, ${settings.postalCode} ${settings.city}`);
+    return 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(
+      `${settings.addressLine1}${settings.addressLine2 ? ', ' + settings.addressLine2 : ''}, ${settings.postalCode} ${settings.city}`
+    );
   }
 }

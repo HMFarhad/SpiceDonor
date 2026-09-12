@@ -78,6 +78,11 @@ import emailjs from '@emailjs/browser';
                     <textarea id="contact_type" name="contact_type" class="form-control" rows="6"
                               [placeholder]="i18n.translate('message_placeholder')" required></textarea>
                   </div>
+
+                  <p class="privacy-note">
+                    {{ i18n.translate('contact_privacy_notice') }}
+                    <a routerLink="/privacy">{{ i18n.translate('privacy_policy') }}</a>.
+                  </p>
                   
                   <div class="form-actions">
                     <button type="submit" class="btn btn-primary btn-lg" [disabled]="isSubmitting">
@@ -300,6 +305,15 @@ import emailjs from '@emailjs/browser';
       text-align: center;
       margin-top: 2rem;
     }
+
+    .privacy-note {
+      color: var(--text-muted);
+      font-size: .875rem;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .privacy-note a { color: var(--text-special); }
     
     .btn-primary {
       background: linear-gradient(135deg, var(--primary-color) 0%, #e55a2b 100%);

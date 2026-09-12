@@ -185,9 +185,9 @@ const hours = [
 const settings = [[
   'Spice Döner', 'Spice Döner', 'Premium kebab, hummus & falafel.', 'Premium kebab, hummus & falafel.',
   'View Menu', 'Katso menu', '/menu', 'https://wolt.com/fi/restaurant/spice-donor',
-  'https://www.ubereats.com/fi', '+358 9 1234 5678', 'info@spicedonor.fi',
-  'Malminkaari 9', '', 'Helsinki', '00700',
-  'https://maps.google.com/maps?q=Malminkaari+9,+00700+Helsinki&output=embed',
+  '', '', 'info@spicedonor.fi',
+  'Kauppakeskus Forum (food court)', 'Mannerheimintie 20', 'Helsinki', '00100',
+  'https://maps.google.com/maps?q=Kauppakeskus+Forum,+Mannerheimintie+20,+00100+Helsinki&output=embed',
   'https://instagram.com/spicedonor', 'https://facebook.com/spicedonor', 'https://tiktok.com/@spicedonor',
   'EUR', '#D2691E', '#8B4513'
 ]];
