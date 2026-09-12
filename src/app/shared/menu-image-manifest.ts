@@ -80,6 +80,10 @@ export const menuImageManifest: Record<string, Record<number, string>> = {
     "960": "assets/images/menu-optimized/13d126a68e84-960.webp",
     "1440": "assets/images/menu-optimized/13d126a68e84-1440.webp"
   },
+  "assets/images/Items/Halloumi Kana Doner.png": {
+    "480": "assets/images/menu-optimized/419a8f67460d-480.webp",
+    "515": "assets/images/menu-optimized/419a8f67460d-1440.webp"
+  },
   "assets/images/Items/Halloumiranskalaiset.jpg": {
     "480": "assets/images/menu-optimized/14ce4165170a-480.webp",
     "960": "assets/images/menu-optimized/14ce4165170a-960.webp",

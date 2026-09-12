@@ -8,7 +8,7 @@ const input = new URL('../src/assets/images/Items/', import.meta.url);
 const output = new URL('../src/assets/images/menu-optimized/', import.meta.url);
 await mkdir(output, { recursive: true });
 const manifest = {};
-const photos = (await readdir(input)).filter(name => /\.jpe?g$/i.test(name)).sort()
+const photos = (await readdir(input)).filter(name => /\.(?:jpe?g|png)$/i.test(name)).sort()
   .map(name => ({ name, source: join(fileURLToPath(input), name), url: `assets/images/Items/${name}` }));
 photos.push({ name: 'Fish n Chips.png', source: join(fileURLToPath(input), '../Fish n Chips.png'), url: 'assets/images/Fish n Chips.png' });
 for (const { name, source, url } of photos) {

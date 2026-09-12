@@ -2,7 +2,9 @@
   position: relative;
   min-height: min(740px, calc(100svh - 76px));
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: stretch;
   overflow: hidden;
   color: var(--white);
 
@@ -28,14 +30,24 @@
     }
   }
 
+  &-menu-board {
+    position: absolute;
+    inset: 0;
+    background-image: url('../../../assets/images/hero-menu-background.webp');
+    background-position: center;
+    background-size: cover;
+    opacity: 0.16;
+    filter: saturate(0.86);
+  }
+
   &::before {
     content: '';
     position: absolute;
     inset: 0;
     z-index: 1;
     background:
-      linear-gradient(90deg, rgba(19, 13, 16, 0.92) 0%, rgba(19, 13, 16, 0.72) 42%, rgba(19, 13, 16, 0.2) 78%),
-      linear-gradient(0deg, rgba(19, 13, 16, 0.78) 0%, rgba(19, 13, 16, 0.08) 65%);
+      linear-gradient(90deg, rgba(19, 13, 16, 0.82) 0%, rgba(19, 13, 16, 0.56) 52%, rgba(19, 13, 16, 0.4) 100%),
+      linear-gradient(0deg, rgba(19, 13, 16, 0.62) 0%, transparent 70%);
   }
 
   .container { width: 100%; }
@@ -43,8 +55,8 @@
   &-content {
     position: relative;
     z-index: 3;
-    max-width: 760px;
-    padding: 8rem 3.5rem 5.5rem;
+    max-width: 860px;
+    padding: 6rem 3.5rem 2.75rem;
   }
 
   &-kicker,
@@ -61,6 +73,8 @@
     text-transform: uppercase;
   }
 
+  .hero-kicker { margin-left: 10rem; }
+
   &-title {
     max-width: 10ch;
     margin: 0 0 1.15rem;
@@ -73,10 +87,33 @@
 
   &-subtitle {
     max-width: 34rem;
-    margin-bottom: 2.1rem;
+    margin-bottom: 0.75rem;
     color: rgba(255, 255, 255, 0.86);
     font-size: clamp(1.05rem, 2vw, 1.3rem);
     line-height: 1.55;
+  }
+
+  &-specialties {
+    position: relative;
+    height: 1.7rem;
+    margin-bottom: 1.5rem;
+    color: var(--secondary-color);
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+
+    span {
+      position: absolute;
+      inset: 0 auto auto 0;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      background: rgba(19, 13, 16, 0.68);
+      opacity: 0;
+      animation: specialty-rotate 9s infinite;
+    }
+
+    span:nth-child(2) { animation-delay: 3s; }
+    span:nth-child(3) { animation-delay: 6s; }
   }
 
   &-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 0.9rem; }
@@ -86,6 +123,36 @@
     padding: 0.95rem 1.55rem;
     font-size: 0.98rem;
   }
+
+  &-dietary {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0.45rem;
+    max-width: 760px;
+    margin-top: 2rem;
+  }
+
+  &-dietary-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    min-width: 0;
+    padding: 0.55rem 0.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    background: rgba(19, 13, 16, 0.56);
+    text-align: center;
+
+    img { width: 52px; height: 52px; object-fit: contain; }
+    span { color: var(--white); font-size: 0.73rem; font-weight: 700; line-height: 1.2; }
+  }
+}
+
+@keyframes specialty-rotate {
+  0%, 30% { opacity: 1; transform: translateY(0); }
+  33%, 100% { opacity: 0; transform: translateY(-6px); }
 }
 
 .section-header {
@@ -267,6 +334,7 @@
 
     &::before { background: linear-gradient(0deg, rgba(19, 13, 16, 0.92), rgba(19, 13, 16, 0.26) 70%); }
     &-content { max-width: 100%; padding: 5.5rem 1.25rem 4.5rem; }
+    .hero-kicker { margin-left: 0; }
     &-title { max-width: 9ch; font-size: clamp(3.2rem, 16vw, 5rem); }
     &-subtitle { margin-bottom: 1.6rem; }
     &-actions { align-items: flex-start; flex-direction: column; }
@@ -287,27 +355,34 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hero-slides img { transition: none; }
+  .hero-specialties span { animation: none; }
+  .hero-specialties span:first-child { opacity: 1; }
   .signature-card,
   .signature-image img { transition: none; }
 }
 
-// Static food photograph and concise mobile landing page.
-.hero { min-height:560px; }
-.hero-visual { position:absolute; inset:0 0 0 30%; z-index:0; }
-.visit-strip { background:#272126; padding:1.2rem 0; border-block:1px solid #493b42; }
+// The menu photograph stays quiet behind the landing-page details.
+.hero { min-height:680px; background:#171416; }
+.hero-visual { position:absolute; inset:0; z-index:0; }
+.visit-strip { position:relative; z-index:3; width:100%; background:rgba(23,20,22,.82); padding:1.2rem 0; border-block:1px solid #493b42; backdrop-filter:blur(10px); }
 .benefit-list { display:flex; flex-wrap:wrap; gap:.6rem; }
 .benefit-list span { padding:.5rem .8rem; border:1px solid #5b444f; border-radius:999px; color:var(--text-light); font-size:.9rem; }
 .highlights h2 { font-size:1.5rem; }
 @media(max-width:768px) {
- .hero { min-height:540px; }
- .hero-visual { inset:0 0 130px; }
- .hero::before { background:linear-gradient(0deg,#151315 0%,rgba(21,19,21,.95) 20%,rgba(21,19,21,.2) 60%,transparent); }
- .hero-content { padding:15rem 0 1.4rem; }
+ .hero { min-height:0; }
+ .hero-visual { inset:0; }
+ .hero-menu-board { background-position:center top; opacity:.12; }
+ .hero::before { background:linear-gradient(0deg,rgba(21,19,21,.88) 0%,rgba(21,19,21,.48) 65%,rgba(21,19,21,.58) 100%); }
+ .hero-content { padding:6.5rem 0 1.8rem; }
  .hero-title { font-size:clamp(2.8rem,14vw,4rem); margin-bottom:.8rem; }
  .hero-kicker { margin-bottom:.8rem; }
- .hero-subtitle { margin-bottom:1rem; }
+ .hero-subtitle { margin-bottom:.9rem; }
  .hero-actions { flex-direction:row; align-items:center; gap:.7rem; }
  .hero .btn-lg { min-height:46px; padding:.65rem 1rem; font-size:.9rem; }
+ .hero-dietary { grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:1.4rem; }
+ .hero-dietary-item img { width:44px; height:44px; }
+ .hero-dietary-item span { font-size:.66rem; }
+ .visit-strip { padding:1rem 0; }
  .signature-section { padding:2rem 0; }
  .signature-header { margin-bottom:1rem; }
  .signature-header h2 { font-size:1.8rem; }

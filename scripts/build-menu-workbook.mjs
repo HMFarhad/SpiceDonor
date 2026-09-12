@@ -30,6 +30,7 @@ const itemImagesByName = await fs.readdir(itemImageDir)
 
 const multiImageSelections = new Map([
   ['chicken_doner', ['Kana Döner', 'Kana Wrap']],
+  ['halloumi_chicken_doner', ['Halloumi Kana Doner', 'Halloumi–Kana Döner Ateria']],
   ['mixed_doner', ['Kana Döner', 'Nauta Döner']],
   ['vegetarian_feta_eggplant', ['Munakoiso-Kukkakaali Pita', 'Munakoiso - Brokkoli Pita']],
   ['eggplant_cauliflower_broccoli', ['Munakoiso-Kukkakaali Pita', 'Munakoiso - Brokkoli Pita']],

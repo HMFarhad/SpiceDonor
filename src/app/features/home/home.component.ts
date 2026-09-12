@@ -11,7 +11,7 @@ import { MenuItem, SiteSettings, Special } from '@core/models';
       <!-- Hero Section -->
       <section class="hero" *ngIf="settings$ | async as settings">
         <div class="hero-visual" aria-hidden="true">
-          <app-food-photo [urls]="heroPhoto" alt="" [hero]="true" [priority]="true"></app-food-photo>
+          <div class="hero-menu-board"></div>
         </div>
         <div class="container">
           <div class="hero-content">
@@ -26,6 +26,11 @@ import { MenuItem, SiteSettings, Special } from '@core/models';
               <p class="hero-subtitle">
                 {{ i18n.getLocalizedContent(settings.heroSubtitle) }}
               </p>
+              <div class="hero-specialties" aria-hidden="true">
+                <span>{{ i18n.translate('hero_specialty_pitas') }}</span>
+                <span>{{ i18n.translate('hero_specialty_bowls') }}</span>
+                <span>{{ i18n.translate('hero_specialty_falafel') }}</span>
+              </div>
               <div class="hero-actions">
                 <a 
                   [routerLink]="settings.ctaPrimaryLink" 
@@ -40,12 +45,17 @@ import { MenuItem, SiteSettings, Special } from '@core/models';
                   }">
                 </app-platform-buttons>
               </div>
+              <div class="hero-dietary" [attr.aria-label]="i18n.translate('dietary_guide')">
+                <div class="hero-dietary-item" *ngFor="let badge of dietaryBadges">
+                  <img [src]="badge.image" [alt]="i18n.translate(badge.label)" width="52" height="52">
+                  <span>{{ i18n.translate(badge.label) }}<span *ngIf="badge.arabic" lang="ar"> · حلال</span></span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+        <div class="visit-strip"><div class="container"><app-visit-info [compact]="true"></app-visit-info></div></div>
       </section>
-
-      <section class="visit-strip"><div class="container"><app-visit-info [compact]="true"></app-visit-info></div></section>
 
       <!-- Signature dishes -->
       <section class="section signature-section" *ngIf="featuredItems$ | async as featuredItems">
@@ -175,8 +185,15 @@ import { MenuItem, SiteSettings, Special } from '@core/models';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  readonly heroPhoto = ['assets/images/Items/Kana Döner.jpg'];
   readonly benefits = ['Fresh Daily', 'Vegan', 'Vegetarian', 'Gluten Free', 'Lactose Free', 'Halal'];
+  readonly dietaryBadges = [
+    { label: 'Fresh Daily', image: 'assets/images/fresh_daily_logo.png' },
+    { label: 'Vegan', image: 'assets/images/vegan_logo.png' },
+    { label: 'Vegetarian', image: 'assets/images/vegetarian_logo.png' },
+    { label: 'Gluten Free', image: 'assets/images/gluten_free_logo.png' },
+    { label: 'Lactose Free', image: 'assets/images/lactose_free_logo.png' },
+    { label: 'Halal', image: 'assets/images/halal_logo.png', arabic: true }
+  ];
   settings$: Observable<SiteSettings | null>;
   specials$: Observable<Special[]>;
   activeSpecials$: Observable<Special[]>;
