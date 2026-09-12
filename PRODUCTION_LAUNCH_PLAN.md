@@ -5,7 +5,7 @@ Assessment date: 12 September 2026
 ## Decision
 
 Keep GitHub as the code repository and deploy the site to Cloudflare Pages. The domains
-`spicedonor.fi` and `spicedonor.com` have now been purchased and will point to Cloudflare. The current site is
+`spicedoner.fi` and a second `.com` domain have now been purchased and will point to Cloudflare. The current site is
 a static Angular application: ordering is handled by external services, menu data is
 packaged in the build, and the contact form uses EmailJS. It does not need a VPS,
 database, managed backend, or paid web-hosting package.
@@ -18,7 +18,7 @@ safer permanent home for the restaurant site.
 
 | Item | Quantity | Supplier | Cost | Decision |
 | --- | ---: | --- | ---: | --- |
-| `spicedonor.fi` and `spicedonor.com` | 2 domains | Existing registrar | Already purchased; renewals vary by registrar/TLD | Purchased; keep auto-renew enabled |
+| `spicedoner.fi` and a second `.com` domain | 2 domains | Existing registrar | Already purchased; renewals vary by registrar/TLD | Purchased; keep auto-renew enabled |
 | Static site hosting | 1 Cloudflare Pages project | Cloudflare Free | €0 | Required |
 | DNS, CDN, DDoS protection, SSL certificate | 1 Cloudflare Free zone | Cloudflare | €0 | Required |
 | Contact-form delivery | 1 existing EmailJS account | EmailJS Free | €0 up to 200 requests/month | Required; verify and secure before launch |
@@ -50,9 +50,9 @@ record their actual renewal prices in the company account register.
 
 ### 1. Secure ownership and accounts — owner, same day
 
-- [ ] Confirm that “Spice Döner” / `spicedonor.fi` does not infringe another protected
+- [ ] Confirm that “Spice Döner” / `spicedoner.fi` does not infringe another protected
       Finnish company name or trademark.
-- [x] Register `spicedonor.fi` and `spicedonor.com`.
+- [x] Register `spicedoner.fi` and the second `.com` domain.
 - [ ] Enable auto-renew and MFA; record the registrar login and recovery codes in the
       company's password manager.
 - [x] Create a Cloudflare account owned by the business. Enable MFA and invite the
@@ -75,7 +75,7 @@ record their actual renewal prices in the company account register.
 ### 3. Prepare the root-domain build — developer, 1 day
 
 - [x] Change Angular `baseHref` from `/SpiceDonor/` to `/` for the custom domain.
-- [x] Change canonical/Open Graph URLs and images to `https://spicedonor.fi`.
+- [x] Change canonical/Open Graph URLs and images to `https://spicedoner.fi`.
 - [x] Add sitemap and robots references for the domain.
 - [x] Put the confirmed production order link and GA4 choice in production config.
 - [x] Make the SPA fallback work on Cloudflare (`/* /index.html 200`).
@@ -93,7 +93,7 @@ the menu workbook refresh behavior is confirmed.
 
 - [ ] Verify which mailbox currently receives EmailJS submissions and make the business
       owner an administrator of the EmailJS account.
-- [ ] Add `https://spicedonor.fi` and `https://www.spicedonor.fi` to the allowed-origin
+- [ ] Add `https://spicedoner.fi` and `https://www.spicedoner.fi` to the allowed-origin
       list if the chosen EmailJS plan supports it.
 - [ ] Add CAPTCHA/anti-bot protection and test success, failure, reply-to, and spam
       handling. The free plan stops processing after 200 requests/month; upgrade to the
@@ -116,11 +116,11 @@ the menu workbook refresh behavior is confirmed.
 
 ### 6. Connect the domain and email — owner + developer, same day
 
-- [ ] Add `spicedonor.fi` as a Cloudflare DNS zone.
+- [ ] Add `spicedoner.fi` as a Cloudflare DNS zone.
 - [ ] At Domainhotelli, replace the registrar nameservers with the two Cloudflare
       nameservers assigned to the zone.
-- [ ] In the Pages project, add `spicedonor.fi` and `www.spicedonor.fi` as custom domains.
-- [ ] Choose `https://spicedonor.fi` as canonical and permanently redirect `www` to it.
+- [ ] In the Pages project, add `spicedoner.fi` and `www.spicedoner.fi` as custom domains.
+- [ ] Choose `https://spicedoner.fi` as canonical and permanently redirect `www` to it.
 - [ ] Wait for Cloudflare to issue SSL, then enforce HTTPS.
 - [ ] Add the selected email provider's MX/SPF/DKIM/DMARC records without proxying mail
       records.

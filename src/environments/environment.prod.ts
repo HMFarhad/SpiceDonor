@@ -2,7 +2,7 @@ import { Environment, DataSourceType } from '@core/models';
 
 export const environment: Environment = {
   production: true,
-  siteUrl: 'https://spicedonor.fi',
+  siteUrl: 'https://spicedoner.fi',
   dataSource: {
     type: DataSourceType.FILE_URL,
     fileUrl: {

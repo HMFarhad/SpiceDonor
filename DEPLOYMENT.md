@@ -18,23 +18,23 @@ static Angular application after every push to `main` and provides HTTPS automat
 
 ## Domains
 
-Use `spicedonor.fi` as the primary address. Add these custom domains to the same Pages
+Use `spicedoner.fi` as the primary address. Add these custom domains to the same Pages
 project:
 
-- `spicedonor.fi`
-- `www.spicedonor.fi`
+- `spicedoner.fi`
+- `www.spicedoner.fi`
 - `spicedonor.com`
 - `www.spicedonor.com`
 
 Create Cloudflare redirect rules so all non-primary variants permanently redirect to
-`https://spicedonor.fi` while preserving the path and query string. Do not enter custom
+`https://spicedoner.fi` while preserving the path and query string. Do not enter custom
 nameservers at the registrar until Cloudflare displays the exact two nameserver values
 assigned to each domain. Then replace the registrar defaults with those values.
 
 ## Included production behavior
 
 - Root-domain Angular routing and a Cloudflare SPA fallback
-- Canonical, Open Graph, sitemap, and robots URLs for `spicedonor.fi`
+- Canonical, Open Graph, sitemap, and robots URLs for `spicedoner.fi`
 - Security and caching headers
 - Optimized menu images only in the deployed asset bundle
 - `menu.xlsx` published at `assets/data/menu.xlsx`

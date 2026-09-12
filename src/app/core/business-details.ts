@@ -8,5 +8,5 @@ export const BUSINESS_DETAILS = {
   postalCode: '00100',
   city: 'Helsinki',
   country: 'Finland',
-  siteUrl: 'https://spicedonor.fi'
+  siteUrl: 'https://spicedoner.fi'
 } as const;
