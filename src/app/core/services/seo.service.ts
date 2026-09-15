@@ -44,7 +44,8 @@ export class SeoService {
     this.meta.updateTag({ property: 'og:url', content: data.url || this.getCurrentUrl() });
     
     if (data.image) {
-      this.meta.updateTag({ property: 'og:image', content: data.image });
+      const imageUrl = this.getAbsoluteUrl(data.image);
+      this.meta.updateTag({ property: 'og:image', content: imageUrl });
       this.meta.updateTag({ property: 'og:image:alt', content: data.title });
     }
     
@@ -54,7 +55,7 @@ export class SeoService {
     this.meta.updateTag({ name: 'twitter:description', content: data.description });
     
     if (data.image) {
-      this.meta.updateTag({ name: 'twitter:image', content: data.image });
+      this.meta.updateTag({ name: 'twitter:image', content: this.getAbsoluteUrl(data.image) });
     }
     
     // Canonical URL
@@ -65,15 +66,17 @@ export class SeoService {
   }
 
   public generateRestaurantJsonLd(settings: SiteSettings): void {
-    const currentLang = this.i18nService.getCurrentLanguage();
-    
     const jsonLd = {
       '@context': 'https://schema.org',
       '@type': 'Restaurant',
-      'name': this.i18nService.getLocalizedContent(settings.heroTitle),
+      '@id': `${environment.siteUrl}/#restaurant`,
+      'name': BUSINESS_DETAILS.brandName,
+      'alternateName': 'Spice Doner',
       'legalName': BUSINESS_DETAILS.legalName,
       'identifier': BUSINESS_DETAILS.businessId,
-      'description': this.i18nService.getLocalizedContent(settings.heroSubtitle),
+      'description': 'Döner kebab, falafel, hummus and mezze restaurant in Forum food court, central Helsinki.',
+      'image': this.getAbsoluteUrl('/assets/images/menu-optimized/84631fc95157-1440.webp'),
+      'logo': this.getAbsoluteUrl('/assets/images/logo.svg'),
       'address': {
         '@type': 'PostalAddress',
         'streetAddress': `${settings.addressLine1}${settings.addressLine2 ? ', ' + settings.addressLine2 : ''}`,
@@ -84,10 +87,15 @@ export class SeoService {
       'telephone': settings.phone,
       'email': settings.email,
       'url': environment.siteUrl,
-      'servesCuisine': 'Middle Eastern',
+      'areaServed': {
+        '@type': 'City',
+        'name': 'Helsinki'
+      },
+      'servesCuisine': ['Döner kebab', 'Kebab', 'Middle Eastern', 'Mediterranean'],
       'priceRange': '€€',
       'acceptsReservations': false,
-      'hasMenu': this.getAbsoluteUrl('/menu')
+      'hasMenu': this.getAbsoluteUrl('/menu'),
+      'sameAs': [settings.instagramUrl, settings.facebookUrl, settings.tiktokUrl].filter(Boolean)
     };
 
     this.insertJsonLd('restaurant', jsonLd);

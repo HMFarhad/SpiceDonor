@@ -26,6 +26,9 @@ import { MenuItem, SiteSettings, Special } from '@core/models';
               <p class="hero-subtitle">
                 {{ i18n.getLocalizedContent(settings.heroSubtitle) }}
               </p>
+              <p class="hero-location-copy">
+                Döner kebab, falafel and mezze at Forum food court in central Helsinki.
+              </p>
               <div class="hero-specialties" aria-hidden="true">
                 <span>{{ i18n.translate('hero_specialty_pitas') }}</span>
                 <span>{{ i18n.translate('hero_specialty_bowls') }}</span>
@@ -225,9 +228,11 @@ export class HomeComponent implements OnInit {
     this.settings$.subscribe(settings => {
       if (settings) {
         this.seoService.updateSeoData({
-          title: this.i18n.getLocalizedContent(settings.heroTitle) + ' - Fresh Middle Eastern Cuisine',
-          description: this.i18n.getLocalizedContent(settings.heroSubtitle),
-          keywords: 'hummus, middle eastern food, helsinki restaurant, vegan, vegetarian, healthy food, fresh',
+          title: 'Spice Döner Helsinki | Döner Kebab at Forum',
+          description: 'Spice Döner serves döner kebab, falafel, hummus and mezze at Forum food court, Mannerheimintie 20 in central Helsinki. View our menu.',
+          keywords: 'Spice Döner, Spice Doner, döner Helsinki, doner Helsinki, kebab Helsinki, döner kebab, Forum Helsinki restaurant, falafel Helsinki',
+          url: '/',
+          image: '/assets/images/menu-optimized/84631fc95157-1440.webp',
           type: 'website'
         });
 

@@ -118,11 +118,18 @@ export class MenuComponent implements OnInit {
   ngOnInit(): void {
     // Update SEO for menu page
     this.seoService.updateSeoData({
-      title: 'Menu - Spice Döner',
-      description: 'Explore our fresh Middle Eastern menu featuring hummus bowls, warm pitas, and healthy salads.',
-      keywords: 'menu, hummus bowls, pita, salads, middle eastern food, vegan, vegetarian',
+      title: 'Döner Kebab Menu Helsinki | Spice Döner Forum',
+      description: 'View the Spice Döner Helsinki menu: chicken and beef döner kebab, wraps, mezze bowls, falafel, halloumi and vegan choices at Forum food court.',
+      keywords: 'döner menu Helsinki, doner kebab Helsinki, kebab menu, chicken döner, beef döner, falafel, halloumi, Forum Helsinki',
+      url: '/menu',
+      image: '/assets/images/menu-optimized/84631fc95157-1440.webp',
       type: 'website'
     });
+
+    this.seoService.generateBreadcrumbJsonLd([
+      { name: 'Spice Döner', url: '/' },
+      { name: 'Menu', url: '/menu' }
+    ]);
 
     // Generate structured data for menu
     this.menuData$.subscribe(data => {

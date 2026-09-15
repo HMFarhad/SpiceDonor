@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { I18nService } from '@core/services';
+import { Component, OnInit } from '@angular/core';
+import { I18nService, SeoService } from '@core/services';
 
 @Component({
   selector: 'app-about',
@@ -8,7 +8,7 @@ import { I18nService } from '@core/services';
       <div class="section">
         <div class="container">
           <div class="about-content">
-            <h2>{{ i18n.translate('about_story_title') }}</h2>
+            <h1>{{ i18n.translate('about_story_title') }}</h1>
             <p>{{ i18n.translate('about_story_p1') }}</p>
             
             <p>{{ i18n.translate('about_story_p2') }}</p>
@@ -73,7 +73,7 @@ import { I18nService } from '@core/services';
       margin: 0 auto;
       line-height: 1.7;
     }
-    .about-content h2 {
+    .about-content h1, .about-content h2 {
       color: var(--text-special);
       margin: 2rem 0 1rem 0;
       font-size: 1.8rem;
@@ -130,6 +130,21 @@ import { I18nService } from '@core/services';
     }
   `]
 })
-export class AboutComponent {
-  constructor(public i18n: I18nService) {}
+export class AboutComponent implements OnInit {
+  constructor(public i18n: I18nService, private seoService: SeoService) {}
+
+  ngOnInit(): void {
+    this.seoService.updateSeoData({
+      title: 'About Spice Döner | Döner Restaurant in Helsinki',
+      description: 'Learn about Spice Döner, our fresh döner kebab, falafel and mezze, and our inclusive menu at Forum food court in central Helsinki.',
+      keywords: 'about Spice Döner, Helsinki döner restaurant, kebab restaurant Helsinki, Forum food court',
+      url: '/about',
+      type: 'website'
+    });
+
+    this.seoService.generateBreadcrumbJsonLd([
+      { name: 'Spice Döner', url: '/' },
+      { name: 'About', url: '/about' }
+    ]);
+  }
 }

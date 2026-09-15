@@ -30,9 +30,10 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Set initial SEO data
     this.seoService.updateSeoData({
-      title: 'Spice Döner - Modern Middle Eastern Cuisine',
-      description: 'Fresh, vibrant Middle Eastern flavors. Hummus bowls, warm pitas, colorful salads crafted daily in Helsinki.',
-      keywords: 'hummus, middle eastern food, helsinki restaurant, vegan, vegetarian, healthy food',
+      title: 'Spice Döner Helsinki | Döner Kebab at Forum',
+      description: 'Spice Döner serves döner kebab, falafel, hummus and mezze at Forum food court, Mannerheimintie 20 in central Helsinki.',
+      keywords: 'Spice Döner, Spice Doner, döner Helsinki, doner Helsinki, kebab Helsinki, Forum Helsinki restaurant',
+      url: '/',
       type: 'website'
     });
 

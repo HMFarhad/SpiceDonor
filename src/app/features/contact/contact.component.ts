@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { I18nService } from '@core/services';
+import { Component, OnInit } from '@angular/core';
+import { I18nService, SeoService } from '@core/services';
 import { isValidPhoneNumber } from './phone-validation';
 import emailjs from '@emailjs/browser';
 
@@ -8,6 +8,7 @@ import emailjs from '@emailjs/browser';
     <div class="page">
       <div class="section">
         <div class="container">
+          <h1 class="contact-page-title">Contact Spice Döner Helsinki</h1>
           <div class="row">
             <!-- Contact Information -->
             <div class="col-md-4">
@@ -104,6 +105,7 @@ import emailjs from '@emailjs/browser';
   `,
   styles: [`
     .container > .row { display:grid; grid-template-columns:minmax(0,.85fr) minmax(0,1.5fr); gap:1.5rem; }
+    .contact-page-title { color:var(--text-special); margin:0 0 1.5rem; font-size:2rem; }
     form .row { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 1rem; }
     .col-md-4,.col-md-8,.col-md-6 { min-width:0; }
     @media(max-width:768px) {
@@ -404,15 +406,30 @@ import emailjs from '@emailjs/browser';
     }
   `]
 })
-export class ContactComponent {
+export class ContactComponent implements OnInit {
   phoneInvalid = false;
   isSubmitting = false;
   showSuccessMessage = false;
   showErrorMessage = false;
 
-  constructor(public i18n: I18nService) {
+  constructor(public i18n: I18nService, private seoService: SeoService) {
     // Initialize EmailJS
     emailjs.init('SwYGWuRATmlLhXvCL');
+  }
+
+  ngOnInit(): void {
+    this.seoService.updateSeoData({
+      title: 'Contact & Location | Spice Döner Helsinki Forum',
+      description: 'Find Spice Döner at Kauppakeskus Forum food court, Mannerheimintie 20, 00100 Helsinki. Contact us or view location details.',
+      keywords: 'Spice Döner address, kebab Forum Helsinki, döner Mannerheimintie, restaurant 00100 Helsinki',
+      url: '/contact',
+      type: 'website'
+    });
+
+    this.seoService.generateBreadcrumbJsonLd([
+      { name: 'Spice Döner', url: '/' },
+      { name: 'Contact', url: '/contact' }
+    ]);
   }
 
   validatePhoneNumber(event: Event): void {
