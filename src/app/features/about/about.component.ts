@@ -29,6 +29,11 @@ import { I18nService, SeoService } from '@core/services';
             
             <h2>{{ i18n.translate('about_promise_title') }}</h2>
             <p>{{ i18n.translate('about_promise_text') }}</p>
+
+            <section class="giving-card" aria-labelledby="giving-back-title">
+              <h2 id="giving-back-title">{{ i18n.translate('about_giving_title') }}</h2>
+              <p>{{ i18n.translate('about_giving_text') }}</p>
+            </section>
             
             <div class="promise-statement">
               <p><strong>{{ i18n.translate('about_closing') }}</strong></p>
@@ -97,6 +102,21 @@ import { I18nService, SeoService } from '@core/services';
       text-align: center;
       margin: 2rem 0;
       border: 1px solid rgba(255, 107, 53, 0.2);
+    }
+    .giving-card {
+      margin: 2rem 0;
+      padding: 1.75rem 2rem;
+      border-left: 5px solid var(--secondary-color);
+      border-radius: var(--radius-large);
+      background: rgba(247, 201, 72, 0.1);
+    }
+    .giving-card h2 {
+      margin-top: 0;
+    }
+    .giving-card p {
+      margin-bottom: 0;
+      color: var(--white);
+      font-size: 1.05rem;
     }
     .promise-statement::after {
       content: '';
